@@ -32,6 +32,14 @@ import time
 
 import openpyxl
 
+# The suites print Chinese labels; a cp1252 console (the CI Windows
+# runners) cannot encode them, which used to abort the suite with a
+# UnicodeEncodeError instead of a result.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from console_setup import setup_console  # noqa: E402
+
+setup_console()
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SRC = os.path.join(ROOT, "src")
@@ -1042,9 +1050,12 @@ def check_cli_edge_cases(sample_dir: str) -> None:
     with open(good, "w", encoding="utf-8", newline="\n") as fh:
         fh.write("<CALL:4>W1AW<QSO_DATE:8>20240101<TIME_ON:4>1200<EOR>")
 
-    unreachable = os.path.join(OUT, "no-drive", "deep", "out.xlsx")
-    if os.name == "nt":
-        unreachable = "Z:\\adif2xlsx_no_such_drive\\out.xlsx"
+    # An ordinary file used as a directory: creating anything "inside" it must
+    # fail on every platform.  The earlier version used a bare relative path,
+    # which is perfectly creatable, so the check only passed where the path
+    # happened to be unwritable -- and CI runs as root, where nothing is.
+    # Permissions cannot be relied on here, so the failure is made structural.
+    unreachable = os.path.join(good, "not-a-folder", "out.xlsx")
     proc = run_converter([good, "-o", unreachable])
     check(proc.returncode == 2 and "Traceback" not in proc.stderr,
           "an output folder that cannot be created exits 2 with a message",

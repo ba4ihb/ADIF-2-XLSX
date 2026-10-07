@@ -34,6 +34,14 @@ sys.path.insert(0, SRC)
 import adif2xlsx as core  # noqa: E402
 import webapp  # noqa: E402
 
+# The suites print Chinese labels; a cp1252 console (the CI Windows
+# runners) cannot encode them, which used to abort the suite with a
+# UnicodeEncodeError instead of a result.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from console_setup import setup_console  # noqa: E402
+
+setup_console()
+
 FIXTURES = os.path.join(HERE, "fixtures", "adi")
 WEB_PAGE = os.path.join(ROOT, "web", "index.html")
 GUI_SRC = os.path.join(SRC, "gui.py")

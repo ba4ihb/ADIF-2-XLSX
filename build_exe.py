@@ -28,6 +28,28 @@ import os
 import shutil
 import subprocess
 import sys
+import io
+
+
+def setup_console() -> None:
+    """Make the build's own output printable on any code page.
+
+    This script prints Chinese paths (`启动网页版.bat`) and Chinese labels, and
+    the CI Windows runners default to a cp1252 console, where those characters
+    cannot be encoded: the build died at the last print.  Reconfiguring to UTF-8
+    with errors="replace" keeps the message readable and the exit code honest.
+
+    Best effort: a stream without a buffer, or one already wrapped, is left be.
+    """
+    for name in ("stdout", "stderr"):
+        stream = getattr(sys, name, None)
+        if stream is None:
+            continue
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError, io.UnsupportedOperation):
+            pass
+
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
@@ -140,6 +162,7 @@ def build(mode: str, *, variant: str = "cli") -> int:
 
 
 def main() -> int:
+    setup_console()
     parser = argparse.ArgumentParser(description="Build the adif2xlsx executables")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--onefile", action="store_true",

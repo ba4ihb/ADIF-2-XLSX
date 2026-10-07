@@ -655,7 +655,33 @@ def test_cli_exe_still_console():
     check(os.path.exists(output), "the console build wrote the workbook")
 
 
+
+def has_display() -> bool:
+    """Can a Tk window actually be opened here?
+
+    False on a headless Linux runner, where the desktop UI cannot be tested at
+    all.  Probing beats guessing from the platform: a Windows session without a
+    desktop (a service, say) also cannot open one.
+    """
+    if os.environ.get("ADIF2XLSX_NO_GUI_TESTS"):
+        return False
+    try:
+        import tkinter
+    except ImportError:
+        return False
+    try:
+        root = tkinter.Tk()
+    except Exception:                               # noqa: BLE001 - any Tk/display error
+        return False
+    root.destroy()
+    return True
+
+
 def main() -> int:
+    if not has_display():
+        print("  SKIP  no display available, so the desktop UI cannot "
+              "be tested here (the window never opens)")
+        return 0
     parser = argparse.ArgumentParser(description="Test the UI and the no-console paths")
     parser.add_argument("--with-exe", action="store_true",
                         help="also drive the packaged executables")

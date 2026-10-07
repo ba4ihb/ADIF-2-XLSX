@@ -94,6 +94,30 @@ def write_log(message: str) -> None:
         pass
 
 
+def setup_console() -> None:
+    """Make stdout/stderr survive text the console code page cannot encode.
+
+    The column labels are Chinese, so printing a report on a console whose code
+    page is not UTF-8 (cp1252 on an English Windows, for instance) raised
+    UnicodeEncodeError and killed the run AFTER the workbook had been written --
+    a successful conversion reported as a crash.  Reconfiguring to UTF-8 with
+    errors="replace" keeps the report readable and the exit code honest.
+
+    Best effort by design: a frozen windowed build has no console at all, and
+    tests may have already replaced these streams.
+    """
+    for name in ("stdout", "stderr"):
+        stream = getattr(sys, name, None)
+        if stream is None:
+            continue
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError, io.UnsupportedOperation):
+            # An already-wrapped stream, a detached one, or one without a
+            # buffer: nothing to do, and nothing worth failing over.
+            pass
+
+
 def emit(message: str) -> None:
     """Write to stderr if one exists, and always to the log."""
     stream = sys.stderr
@@ -101,6 +125,14 @@ def emit(message: str) -> None:
         try:
             stream.write(message)
             stream.flush()
+        except UnicodeEncodeError:
+            # A console code page that cannot represent the text must never turn
+            # a finished conversion into a crash.
+            try:
+                stream.write(message.encode("ascii", "replace").decode("ascii"))
+                stream.flush()
+            except (OSError, ValueError, AttributeError, UnicodeEncodeError):
+                pass
         except (OSError, ValueError, AttributeError):
             pass
     write_log(message.rstrip("\n"))
@@ -1840,6 +1872,9 @@ def print_field_list() -> None:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    # Before anything can be printed: the report and the column labels are
+    # Chinese, and a non-UTF-8 console code page would otherwise crash the run.
+    setup_console()
     args = build_arg_parser().parse_args(argv)
 
     if args.list_fields:

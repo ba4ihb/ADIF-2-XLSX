@@ -1,9 +1,22 @@
 name: tests
 
+# Windows and Linux, 3.10 and 3.12.  The matrix exists because the two failures
+# that mattered were platform-specific: a cp1252 console that could not encode
+# the Chinese labels, and an acceptance check that relied on a path being
+# unwritable (true as a normal user, false as root on Linux).
+
 on:
   push:
     branches: [main, master]
   pull_request:
+
+env:
+  # The tool and its tests print Chinese.  Without these, a Windows runner whose
+  # console code page is cp1252 raises UnicodeEncodeError from print() and the
+  # step fails after the work has already succeeded.  The suites also guard
+  # themselves (tests/console_setup.py), so this is belt and braces.
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: "utf-8"
 
 jobs:
   test:
@@ -23,12 +36,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install openpyxl
+        run: pip install openpyxl ruff
 
       - name: Lint (ruff)
-        run: |
-          pip install ruff
-          ruff check .
+        run: ruff check .
 
       - name: ADIF enumeration contract tests
         run: python tests/test_enumerations.py
@@ -41,6 +52,15 @@ jobs:
 
       - name: End-to-end acceptance tests
         run: python tests/test_acceptance.py
+
+      - name: Column catalogue agreement between the three front ends
+        run: python tests/test_frontend_parity.py
+
+      - name: Browser edition (static checks)
+        # The browser edition runs the real converter under Pyodide.  Its live
+        # check needs a browser and the Pyodide CDN; CI only asserts the static
+        # properties, above all that the packed sources match src/.
+        run: python tests/test_browser_edition.py --no-browser
 
       - name: Desktop UI and no-console tests
         run: python tests/test_gui.py
