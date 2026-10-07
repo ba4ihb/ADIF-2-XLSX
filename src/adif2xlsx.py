@@ -35,7 +35,7 @@ import tempfile
 from collections import OrderedDict
 from typing import Dict, Iterable, Iterator, List, NamedTuple, Optional, Sequence, Tuple
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 try:
     from openpyxl import Workbook

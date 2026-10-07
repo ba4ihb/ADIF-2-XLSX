@@ -5,10 +5,10 @@
 **Turn an amateur radio log into a clean Excel workbook**
 
 [![tests](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml/badge.svg)](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-84%2E8%25-3776AB?logo=python&logoColor=white)](#language-composition)
-[![HTML](https://img.shields.io/badge/HTML-15%2E0%25-E34F26?logo=html5&logoColor=white)](#language-composition)
-[![Batchfile](https://img.shields.io/badge/Batchfile-0%2E2%25-4D4D4D)](#language-composition)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-2b2b2b.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-94%2E0%25-3776AB?logo=python&logoColor=white)](#language-composition)
+[![HTML](https://img.shields.io/badge/HTML-5%2E8%25-E34F26?logo=html5&logoColor=white)](#language-composition)
+[![Batchfile](https://img.shields.io/badge/Batchfile-0%2E3%25-4D4D4D)](#language-composition)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#requirements)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#download)
 [![DXCC](https://img.shields.io/badge/DXCC-ARRL%202026-FF7EA8)](src/dxcc_tables.py)
@@ -495,24 +495,30 @@ The important points:
 ## Language composition
 
 Measured by `tools/lang_stats.py` over the repository's **non-blank code lines**,
-excluding generated files (`src/dxcc_tables.py`), third-party data and build
-output:
+excluding **generated files** (`src/dxcc_tables.py`, `web/browser.html` and its
+byte-identical copy in `docs/`), third-party data and build output:
 
 | Language | Lines | Share |
 |----------|------:|------:|
-| Python | 14,104 | **84.8 %** |
-| HTML (single-file front ends, including the browser edition page) | 2,488 | **15.0 %** |
-| Batchfile (launcher) | 32 | **0.2 %** |
-| **Total** | **16,624** | 100 % |
+| Python | 11,222 | **94.0 %** |
+| HTML (interface shell) | 690 | **5.8 %** |
+| Batchfile (launcher) | 32 | **0.3 %** |
+| **Total** | **11,944** | 100 % |
 
-Documentation and configuration (Markdown, TOML) are reported separately and kept
-out of the code mix.
+Documentation and configuration (Markdown, TOML) and the one-off diagnostic
+scripts under `tests/adversarial/` are listed separately and kept out of the code
+mix.
 
 Python dominating is deliberate: **the conversion, the DXCC table, the postage and
-all four front ends are one body of Python.** The 15 % of HTML is interface shell
-— **it does not parse ADIF** — and the browser edition runs that same Python
-directly in the page (see [Architecture](#architecture)). There is therefore no
-second implementation to drift.
+all four front ends are one body of Python.** HTML is only 5.8 % and is pure
+interface shell — **it does not parse ADIF** — and the browser edition runs that
+same Python directly in the page (see [Architecture](#architecture)). There is
+therefore no second implementation to drift.
+
+> This section previously read HTML **15.0 %**, which was a bug in the counting
+> script: `web/browser.html` is generated from `web/index.html`, and
+> `docs/web.html` is a byte-identical copy of it, so one file was counted twice
+> and 1,798 lines were added twice over. Fixed.
 
 Re-measure with `python tools/lang_stats.py`.
 
@@ -579,8 +585,11 @@ python tests/run_all_tests.py --all    # all 9 suites, including the packaged bu
 
 - **The black window**: the local-service edition opens a console window at start.
   **Do not close it while converting.** It is the service, not an error.
-- **Package size**: about 32 MB for the single-file exe and 77 MB unpacked for the
-  folder build, because the whole Python runtime is embedded.
+- **Package size**: about **22 MB** for the single-file exe and **49 MB** unpacked
+  for the folder build. The whole Python runtime and openpyxl are embedded, so no
+  Python installation is needed. The build explicitly **excludes numpy, pandas,
+  matplotlib and scipy**, none of which the program uses — without that the
+  download would be roughly 27 MB larger.
 - **The single-file build starts slowly**: 8–60 s depending on disk and memory. The
   folder build is markedly faster.
 - **A few DXCC numbers could not be independently verified**: those entities are
@@ -596,8 +605,12 @@ python tests/run_all_tests.py --all    # all 9 suites, including the packaged bu
 
 ## Licence
 
-[MIT License](LICENSE) — use, modify and redistribute freely, including commercially;
-just keep the copyright notice.
+**[GNU General Public License v3.0](LICENSE)** — free software: use, modify and
+redistribute it freely.
+
+When you distribute this program or a derivative of it, **you must also make the
+complete source available** under the same GPL-3.0 terms. The program comes with
+**no warranty at all**.
 
 ### Third-party data
 
@@ -613,6 +626,10 @@ This project is not affiliated with ARRL, China Post or the ADIF maintainers.
 
 ## Credits
 
+**The idea came from my best friend BA4JBN.**
+Without it this tool would not exist — every line of code and documentation here
+was built on that starting point.
+
 **Every line of code and documentation was written by
 [DeepSeek Harness](https://github.com/deepseek-ai) + DeepSeek-V4.1-Flash Max.**
 
@@ -624,6 +641,6 @@ Amateur radio · 73!
 
 **[🌐 简体中文版 →](README.md)**
 
-<sub>MIT License · Made for Chinese hams</sub>
+<sub>GPL-3.0 · Made for Chinese hams</sub>
 
 </div>

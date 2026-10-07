@@ -5,10 +5,10 @@
 **把业余无线电日志整理成一张干净的 Excel 表格**
 
 [![tests](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml/badge.svg)](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-84%2E8%25-3776AB?logo=python&logoColor=white)](#语言的构成)
-[![HTML](https://img.shields.io/badge/HTML-15%2E0%25-E34F26?logo=html5&logoColor=white)](#语言的构成)
-[![Batchfile](https://img.shields.io/badge/Batchfile-0%2E2%25-4D4D4D)](#语言的构成)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-2b2b2b.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-94%2E0%25-3776AB?logo=python&logoColor=white)](#语言的构成)
+[![HTML](https://img.shields.io/badge/HTML-5%2E8%25-E34F26?logo=html5&logoColor=white)](#语言的构成)
+[![Batchfile](https://img.shields.io/badge/Batchfile-0%2E3%25-4D4D4D)](#语言的构成)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#环境要求)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#下载)
 [![DXCC](https://img.shields.io/badge/DXCC-ARRL%202026-FF7EA8)](src/dxcc_tables.py)
@@ -463,20 +463,27 @@ adif2xlsx.exe [输入...] [-o 输出.xlsx] [选项]
 ## 语言的构成
 
 按仓库中**非空代码行**统计，由 `tools/lang_stats.py` 生成；
-不计生成物（`src/dxcc_tables.py`）、第三方数据和构建产物：
+**不计生成物**（`src/dxcc_tables.py`、`web/browser.html` 及其在 `docs/` 的副本）、
+第三方数据和构建产物：
 
 | 语言 | 行数 | 占比 |
 |------|-----:|-----:|
-| Python | 14 104 | **84.8 %** |
-| HTML（单文件前端 + 浏览器版页面） | 2 488 | **15.0 %** |
-| Batchfile（启动脚本） | 32 | **0.2 %** |
-| **合计** | **16 624** | 100 % |
+| Python | 11 222 | **94.0 %** |
+| HTML（界面外壳） | 690 | **5.8 %** |
+| Batchfile（启动脚本） | 32 | **0.3 %** |
+| **合计** | **11 944** | 100 % |
 
-另有 Markdown、TOML 等文档与配置，不计入代码占比。
+另有 Markdown、TOML 等文档与配置，以及 `tests/adversarial/` 下的一次性诊断脚本，
+均不计入代码占比（脚本会把它们单独列出）。
 
 Python 占绝对多数是刻意的：**转换、DXCC、邮资、四种界面全部是同一份 Python 代码**。
-HTML 那 15 % 是界面外壳——**它自己不解析 ADIF**，浏览器版更是直接在页面里跑那份
-Python（见 [架构说明](#架构说明)）。所以不存在"两份实现不一致"的问题。
+HTML 只有 5.8 %，是纯粹的界面外壳——**它自己不解析 ADIF**，
+浏览器版更是直接在页面里跑那份 Python（见 [架构说明](#架构说明)）。
+所以不存在"两份实现不一致"的问题。
+
+> 早先这里显示 HTML **15.0 %**，是统计脚本的 bug：`web/browser.html` 由
+> `web/index.html` **生成**，而 `docs/web.html` 是它的**逐字节副本**，
+> 同一个文件被数了两遍，虚增 1 798 行。已修正。
 
 重新统计：`python tools/lang_stats.py`
 
@@ -543,7 +550,10 @@ python tests/run_all_tests.py --all    # 全部 9 个套件，含打包版
 
 - **黑窗口**：本机服务版每次启动会弹一个黑色命令行窗口，**转换期间不要关闭**。
   这是本机服务的窗口，不是错误。
-- **打包体积**：单文件 EXE 约 32 MB，解压后文件夹版约 77 MB。因为内嵌了完整的 Python 运行时。
+- **打包体积**：单文件 EXE 约 **22 MB**，解压后文件夹版约 **49 MB**。
+  内嵌了完整的 Python 运行时（含 openpyxl），所以不需要装 Python。
+  构建时**明确排除了用不到的 numpy / pandas / matplotlib / scipy**，
+  否则体积会多出约 27 MB。
 - **单文件版启动慢**：约 8–60 秒（取决于磁盘和内存）。文件夹版明显更快。
 - **少数 DXCC 编号未能独立核实**：这些实体只报名字，编号列显示前缀，不编造数字。
 - **测试数据是脱敏的**：仓库里的六份日志呼号是合成的，因此它们**不能**用来验证真实日志的判定结果。
@@ -554,7 +564,10 @@ python tests/run_all_tests.py --all    # 全部 9 个套件，含打包版
 
 ## 开源协议
 
-[MIT License](LICENSE) —— 可自由使用、修改、分发，包括商业用途，只需保留版权声明。
+**[GNU General Public License v3.0](LICENSE)** —— 自由软件，可自由使用、修改、分发。
+
+分发本程序或其衍生作品时，**必须一并提供完整源代码**，并以同样的 GPL-3.0 授权。
+本程序**不提供任何担保**。
 
 ### 第三方数据
 
@@ -570,6 +583,9 @@ python tests/run_all_tests.py --all    # 全部 9 个套件，含打包版
 
 ## 致谢
 
+**这个创意来自我最好的朋友 BA4JBN。**
+没有他的想法，就不会有这个工具——所有代码与文档都是在这个前提下一步步做出来的。
+
 **全部代码与文档由 [DeepSeek Harness](https://github.com/deepseek-ai) + DeepSeek-V4.1-Flash Max 编写。**
 
 业余无线电 · 73!
@@ -580,6 +596,6 @@ python tests/run_all_tests.py --all    # 全部 9 个套件，含打包版
 
 **[🌐 English version →](README.en.md)**
 
-<sub>MIT License · Made for Chinese hams</sub>
+<sub>GPL-3.0 · Made for Chinese hams</sub>
 
 </div>

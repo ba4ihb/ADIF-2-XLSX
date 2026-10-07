@@ -51,7 +51,7 @@ ADIF 2 XLSX —— {title}
 {extra_files}
   README.md              完整说明（简体中文）
   README.en.md           Full documentation (English)
-  LICENSE                MIT 开源协议
+  LICENSE                GPL-3.0 开源协议
 
 所有时间均为 UTC，不做时区换算。
 生成的 Excel 会写明数据来源；单元格为空表示源 ADI 中没有相应数据，

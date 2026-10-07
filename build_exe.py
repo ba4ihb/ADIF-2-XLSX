@@ -138,6 +138,23 @@ def build(mode: str, *, variant: str = "cli") -> int:
     if web:
         data_args = ["--add-data", f"{os.path.join(HERE, 'web')}{os.pathsep}web"]
 
+    # Packages PyInstaller pulls in that this program never uses.  They are
+    # installed in the build environment for other reasons, and openpyxl's hooks
+    # drag several of them in: numpy alone was 27 MB of the ~78 MB folder build,
+    # and nothing here imports it.  Excluding them keeps the download honest
+    # about what it contains.
+    #
+    # Deliberately NOT excluded: lxml and defusedxml (openpyxl uses them for XML
+    # parsing, depending on version), PIL (openpyxl imports it), and setuptools
+    # (PyInstaller hooks rely on it).
+    UNUSED = [
+        "numpy", "pandas", "matplotlib", "scipy", "IPython",
+        "PIL.ImageQt", "pytest", "yaml",
+    ]
+    exclude_args = []
+    for module in UNUSED:
+        exclude_args += ["--exclude-module", module]
+
     command = [
         sys.executable, "-m", "PyInstaller",
         "--noconfirm",
@@ -151,6 +168,7 @@ def build(mode: str, *, variant: str = "cli") -> int:
         "--hidden-import", "postage",
         "--hidden-import", "gui",
         "--hidden-import", "webapp",
+        *exclude_args,
         "--windowed" if gui else "--console",
         "--version-file", os.path.join(BUILD, "version_info.txt"),
         *data_args,

@@ -5,7 +5,7 @@
     {
       "name": "adif2xlsx.py",
       "bytes": 86081,
-      "sha256": "b53ebfc5524e8f8d9ad102975d1ccbb88f7de8c11d0501a03f874da55aad7a49"
+      "sha256": "38045ff2a0417459dffd696c6816c9d94d6f8822de18425b0fdf8376f7c9ccaf"
     },
     {
       "name": "dxcc.py",
@@ -42,6 +42,6 @@
   "pysrc": {
     "file": "adif2xlsx-pysrc.zip",
     "bytes": 57280,
-    "sha256": "dcf0d93ea9077eb6e72ff30095e8141bebe55ec86fb52f9ebd222813f943c211"
+    "sha256": "a54c7dfac5a3d21cb3fe87b019d02c6371a83d6c523d1e739e0c041675c35306"
   }
 }
