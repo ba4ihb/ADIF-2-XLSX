@@ -51,7 +51,8 @@ ADIF 2 XLSX —— {title}
 {extra_files}
   README.md              完整说明（简体中文）
   README.en.md           Full documentation (English)
-  LICENSE                GPL-3.0 开源协议
+  LICENSE                GPL-3.0 授权全文
+  NOTICE                 版权声明与授权说明
 
 所有时间均为 UTC，不做时区换算。
 生成的 Excel 会写明数据来源；单元格为空表示源 ADI 中没有相应数据，
@@ -199,6 +200,11 @@ def build_package(variant: str, version: str, onedir: bool) -> str:
                 print("     included 启动网页版.bat")
 
         zf.write(os.path.join(ROOT, "LICENSE"), "LICENSE")
+        # The copyright notice: the GPL text itself must stay unmodified, so the
+        # "Copyright (C) ..." line lives here.
+        notice = os.path.join(ROOT, "NOTICE")
+        if os.path.isfile(notice):
+            zf.write(notice, "NOTICE")
         # Both language versions travel with the package: the ZIP is often the
         # only copy a user has, and the two files link to each other.
         for readme in ("README.md", "README.en.md"):
@@ -240,6 +246,9 @@ def build_all_in_one(version: str) -> str:
             print("     SKIP: nothing to package")
             return ""
         zf.write(os.path.join(ROOT, "LICENSE"), "LICENSE")
+        notice = os.path.join(ROOT, "NOTICE")
+        if os.path.isfile(notice):
+            zf.write(notice, "NOTICE")
         for readme in ("README.md", "README.en.md"):
             path = os.path.join(ROOT, readme)
             if os.path.isfile(path):

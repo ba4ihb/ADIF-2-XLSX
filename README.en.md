@@ -612,6 +612,10 @@ When you distribute this program or a derivative of it, **you must also make the
 complete source available** under the same GPL-3.0 terms. The program comes with
 **no warranty at all**.
 
+The copyright notice and a plain-language summary of what the licence asks of
+you are in [NOTICE](NOTICE). `LICENSE` holds the unmodified GPL text, which is
+what lets GitHub identify the licence correctly.
+
 ### Third-party data
 
 | Source | Used for | Note |

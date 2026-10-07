@@ -1,0 +1,37 @@
+ADIF 2 XLSX -- ADIF to Excel converter for amateur radio logs
+Copyright (C) 2026 ADIF 2 XLSX contributors
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <https://www.gnu.org/licenses/>.
+
+The full licence text is in the LICENSE file beside this one.
+
+---------------------------------------------------------------------------
+What this means in practice
+---------------------------------------------------------------------------
+
+You may use, study, modify and redistribute this program, including for
+commercial purposes.  If you distribute it, or a modified version of it, the
+GPL requires that you:
+
+  * make the complete corresponding source code available to whoever receives
+    the program, under the same licence;
+  * keep the copyright notices and this licence intact;
+  * state clearly what you changed.
+
+There is no warranty of any kind.
+
+---------------------------------------------------------------------------
+The idea for this program came from BA4JBN.
+Every line of code, test and documentation was written by
+DeepSeek Harness + DeepSeek-V4.1-Flash Max.
+---------------------------------------------------------------------------
