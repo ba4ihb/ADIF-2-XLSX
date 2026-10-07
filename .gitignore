@@ -3,6 +3,11 @@ build/
 dist/
 *.spec
 
+# ...but the browser editions assets live in docs/dist and MUST be
+# published: the page fetches the packed Python sources and the openpyxl
+# wheel from beside itself.  Hiding them breaks the live site, not the build.
+!docs/dist/
+
 # Release archives ----------------------------------------------------------
 # The ZIPs are attached to a GitHub Release, not committed: 390 MB of binaries
 # in git history would be permanent and would not help anyone.
