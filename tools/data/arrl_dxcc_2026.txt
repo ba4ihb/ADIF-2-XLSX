@@ -1,0 +1,341 @@
+247	Spratly Is.	AS	
+246	Sov. Mil. Order of Malta	EU	1A1
+260	Monaco	EU	3A
+4	Agalega & St. Brandon Is.	AF	3B6, 7
+165	Mauritius	AF	3B8
+207	Rodrigues I.	AF	3B9
+49	Equatorial Guinea	AF	3C
+195	Annobon I.	AF	3C0
+176	Fiji	OC	3D2
+489	Conway Reef	OC	3D2
+460	Rotuma I.	OC	3D2
+468	Kingdom of Eswatini	AF	3DA
+474	Tunisia	AF	3V
+293	Viet Nam	AS	3W,XV
+107	Guinea	AF	3X
+24	Bouvet	AF	3Y
+199	Peter 1 I.	AN	3Y
+18	Azerbaijan	AS	4J, 4K
+75	Georgia	AS	4L
+514	Montenegro	EU	4O
+315	Sri Lanka	AS	4P-4S
+117	4U_ITU#* ITU HQ	EU	
+289	United Nations HQ	NA	4U_UN
+511	Timor - Leste	OC	4W
+336	Israel	AS	4X, 4Z
+436	Libya	AF	5A
+215	Cyprus	AS	5B, C4, P3
+470	Tanzania (United Rep of)	AF	5H-5I
+450	Nigeria	AF	5N
+438	Madagascar	AF	5R
+444	Mauritania	AF	5T
+187	Niger	AF	5U
+483	Togo	AF	5V
+190	Samoa	OC	5W
+286	Uganda	AF	5X
+430	Kenya	AF	5Y-5Z
+456	Senegal	AF	6V-6W4
+82	Jamaica	NA	6Y
+492	Yemen	AS	7O5
+432	Lesotho	AF	7P
+440	Malawi	AF	7Q
+400	Algeria (People’s Dem Republic of)	AF	7R,7T-7Y
+62	Barbados	NA	8P
+159	Maldives	AS	8Q
+129	Guyana	SA	8R
+497	Croatia	EU	9A
+424	Ghana	AF	9G
+257	Malta	EU	9H
+482	Zambia	AF	9I-9J
+348	Kuwait	AS	9K
+458	Sierra Leone	AF	9L
+299	West Malaysia	AS	9M2,4
+46	East Malaysia	OC	9M6, 88
+369	Nepal	AS	9N
+414	Dem. Rep. of Congo	AF	9O-9T
+404	Burundi	AF	9U
+381	Singapore (Republic of)	AS	9V
+454	Rwanda	AF	9X
+90	Trinidad & Tobago	SA	9Y-9Z
+402	Botswana (Republic of)	AF	A2, 8O
+160	Tonga	OC	A3
+370	Oman	AS	A4
+306	Bhutan	AS	A5
+391	United Arab Emirates	AS	A6
+376	Qatar	AS	A7
+304	Bahrain	AS	A9
+372	Pakistan (Islamic Rep of)	AS	AP-AS
+318	China	AS	B
+506	Scarborough Reef	AS	BS7
+386	Taiwan	AS	BU-BX
+505	Pratas I.	AS	BV9P
+157	Nauru	OC	C2
+203	Andorra	EU	C3
+422	Gambia (Republic of the)	AF	C5
+60	Bahamas (Commonwealth of the)	NA	C6
+181	Mozambique	AF	C8-9
+112	Chile	SA	CA-CE
+47	Easter I.	SA	CE0
+125	Juan Fernandez Is.	SA	CE0
+217	San Felix & San Ambrosio	SA	CE0
+13	Antarctica	AN	CE9/KC4
+70	Cuba	NA	CL-CM, CO
+446	Morocco (Kingdom of)	AF	CN
+104	Bolivia	SA	CP
+272	Portugal	EU	CQ-CU
+256	Madeira Is.	AF	CT3
+149	Azores	EU	CU
+144	Uruguay	SA	CV-CX
+211	Sable I.	NA	CY0
+252	St. Paul I.	NA	CY9
+401	Angola	AF	D2-3
+409	Cabo Verde (Repub of)	AF	D4
+411	Comoros	AF	D6
+230	Germany (Fed Repub of)	EU	DA-DR
+375	Philippines	OC	DU-DZ,4D-4I
+51	Eritrea	AF	E3
+510	Palestine	AS	E4
+191	N. Cook Is.	OC	E5
+234	S. Cook Is.	OC	E5
+188	Niue	OC	E6
+501	Bosnia-Herzegovina	EU	E7
+281	Spain	EU	EA-EH
+21	Balearic Is.	EU	EA6-EH6
+29	Canary Is.	AF	EA8-EH8
+32	Ceuta & Melilla	AF	EA9-EH9
+245	Ireland	EU	EI-EJ
+14	Armenia	AS	EK
+434	Liberia	AF	EL
+330	Iran	AS	EP-EQ
+179	Moldova	EU	ER
+52	Estonia	EU	ES
+53	Ethiopia	AF	ET
+27	Belarus	EU	EU-EW
+135	Kyrgyzstan	AS	EX
+262	Tajikistan	AS	EY
+280	Turkmenistan	AS	EZ
+227	France	EU	F
+79	Guadeloupe	NA	FG, TO
+169	Mayotte	AF	FH,TO
+516	Saint Barthelemy	NA	FJ,TO
+162	New Caledonia	OC	FK, TX
+512	Chesterfield Is.	OC	FK,TX
+84	Martinique	NA	FM, TO
+508	Austral I.	OC	FO,TX
+36	Clipperton I.	NA	FO, TX
+175	French Polynesia	OC	FO, TX
+509	Marquesas Is.	OC	FO,TX
+277	St. Pierre & Miquelon	NA	FP
+453	Reunion I.	AF	FR, TO
+99	Glorioso Is.	AF	FT/G, TO17
+124	Juan de Nova, Europa	AF	FT/J,E, TO17
+276	Tromelin I.	AF	FT/T, TO
+213	Saint Martin	NA	FS, TO
+41	Crozet I.	AF	FT/W
+131	Kerguelen Is.	AF	FT/X
+10	Amsterdam & St. Paul Is.	AF	FT/Z
+298	Wallis & Futuna Is.	OC	FW
+63	French Guiana	SA	FY
+223	England	EU	G, GX, M
+114	Isle of Man	EU	GD, GT
+265	Northern Ireland	EU	GI, GN
+122	Jersey	EU	GJ, GH
+279	Scotland	EU	GM, GS
+106	Guernsey	EU	GU, GP
+294	Wales	EU	GW, GC
+185	Solomon Is.	OC	H4
+507	Temotu Province	OC	H40
+239	Hungary	EU	HA, HG
+287	Switzerland	EU	HB
+251	Liechtenstein	EU	HB0
+120	Ecuador	SA	HC-HD
+71	Galapagos Is.	SA	HC8-HD8
+78	Haiti	NA	HH
+72	Dominican Republic	NA	HI
+116	Colombia	SA	HJ-HK, 5J-5K
+161	Malpelo I.	SA	HK0
+216	San Andres & Providencia	NA	HK0
+137	Republic of Korea	AS	HL, 6K-6N
+88	Panama	NA	HO-HP
+80	Honduras	NA	HQ-HR
+387	Thailand	AS	HS, E2
+295	Vatican	EU	HV
+378	Saudi Arabia	AS	HZ
+248	Italy	EU	I
+225	Sardinia	EU	IS0, IM0
+382	Djibouti	AF	J2
+77	Grenada	NA	J3
+109	Guinea-Bissau	AF	J5
+97	St. Lucia	NA	J6
+95	Dominica	NA	J7
+98	St. Vincent	NA	J8
+339	Japan	AS	JA-JS, 7J-7N
+177	Minami Torishima	OC	JD1
+192	Ogasawara	AS	JD1
+363	Mongolia	AS	JT-JV
+259	Svalbard	EU	JW
+118	Jan Mayen	EU	JX
+342	Jordan	AS	JY
+291	United States of America	NA	K,W,N,AA-AK
+105	Guantanamo Bay	NA	KG4
+166	Mariana Is.	OC	KH0
+20	Baker & Howland Is.	OC	KH1
+103	Guam	OC	KH2
+123	Johnston I.	OC	KH3
+174	Midway I.	OC	KH4
+197	Palmyra & Jarvis Is.	OC	KH5
+110	Hawaii	OC	KH6,7
+138	Kure I.	OC	KH7K
+9	American Samoa	OC	KH8
+515	Swains I.	OC	KH8
+297	Wake I.	OC	KH9
+6	Alaska	NA	KL,AL,NL
+182	Navassa I.	NA	KP1
+285	Virgin Is.	NA	KP2
+202	Puerto Rico	NA	KP3,4
+43	Desecheo I.	NA	KP5
+266	Norway	EU	LA-LN
+100	Argentina	SA	LO-LW
+254	Luxembourg	EU	LX
+146	Lithuania	EU	LY
+212	Bulgaria	EU	LZ
+136	Peru	SA	OA-OC
+354	Lebanon	AS	OD
+206	Austria	EU	OE
+224	Finland	EU	OF-OI
+5	Aland Is.	EU	OH0
+167	Market Reef	EU	OJ0
+503	Czech Republic	EU	OK-OL
+504	Slovak Republic	EU	OM
+209	Belgium	EU	ON-OT
+221	Denmark	EU	OU-OW, OZ
+237	Greenland	NA	OX
+222	Faroe Is.	EU	OY
+163	Papua New Guinea	OC	P2
+91	Aruba	SA	P4
+344	Democratic People's Rep. of Korea	AS	P5
+263	Netherlands	EU	PA-PI
+517	Curacao	SA	PJ2
+520	Bonaire	SA	PJ4
+519	Saba & St. Eustatius	NA	PJ5,6
+518	Sint Maarten	NA	PJ7
+108	Brazil	SA	PP-PY, ZV-ZZ
+56	Fernando de Noronha	SA	PP0-PY0F
+253	St. Peter & St. Paul Rocks	SA	PP0-PY0S
+273	Trindade & Martim Vaz Is.	SA	PP0-PY0T
+140	Suriname	SA	PZ
+61	Franz Josef Land	EU	R1/F
+302	Western Sahara	AF	S01,
+305	Bangladesh	AS	S2
+499	Slovenia	EU	S5
+379	Seychelles	AF	S7
+219	Sao Tome & Principe	AF	S9
+284	Sweden	EU	SA-SM, 7S-8S
+269	Poland	EU	SN-SR
+466	Sudan	AF	ST
+478	Egypt	AF	SU
+236	Greece	EU	SV-SZ, J4
+180	Mount Athos	EU	SV/A
+45	Dodecanese	EU	SV5, J45
+40	Crete	EU	SV9, J49
+282	Tuvalu	OC	T2
+301	W. Kiribati (Gilbert Is. )	OC	T30
+31	C. Kiribati	OC	T31
+48	E. Kiribati (Line Is.)	OC	T32
+490	Banaba I. (Ocean I.)	OC	T33
+232	Somalia	AF	T5, 6O
+278	San Marino	EU	T7
+22	Palau	OC	T8
+390	Turkey	EU	TA-TC
+242	Iceland	EU	TF
+76	Guatemala	NA	TG, TD
+308	Costa Rica	NA	TI, TE
+37	Cocos I.	NA	TI9
+406	Cameroon	AF	TJ
+214	Corsica	EU	TK
+408	Central Africa	AF	TL
+412	Congo (Republic of the)	AF	TN
+420	Gabon	AF	TR
+410	Chad	AF	TT
+428	Cote d'Ivoire	AF	TU
+416	Benin	AF	TY
+442	Mali	AF	TZ
+54	European Russia	EU	UA-UI1-7,RA-RZ
+126	Kaliningrad	EU	UA2, RA2
+15	Asiatic Russia	AS	UA-UI8,9,0,RA-RZ
+292	Uzbekistan	AS	UJ-UM
+130	Kazakhstan	AS	UN-UQ
+288	Ukraine	EU	UR-UZ,EM-EO
+94	Antigua & Barbuda	NA	V2
+66	Belize	NA	V3
+249	St. Kitts & Nevis	NA	V4
+464	Namibia	AF	V5
+173	Micronesia	OC	V6
+168	Marshall Is.	OC	V7
+345	Brunei Darussalam	OC	V8
+1	Canada	NA	VA-VG
+150	Australia	OC	VK, AX
+111	Heard I.	AF	VK0
+153	Macquarie I.	OC	VK0
+38	Cocos (Keeling) Is.	OC	VK9C
+147	Lord Howe I.	OC	VK9L
+171	Mellish Reef	OC	VK9M
+189	Norfolk I.	OC	VK9N
+303	Willis I.	OC	VK9W
+35	Christmas I.	OC	VK9X
+12	Anguilla	NA	VP2E
+96	Montserrat	NA	VP2M
+65	British Virgin Is.	NA	VP2V
+89	Turks & Caicos Is.	NA	VP5
+172	Pitcairn I.	OC	VP6
+513	Ducie I.	OC	VP6
+141	Falkland Is.	SA	VP8
+235	South Georgia I.	SA	VP0
+238	South Orkney Is.	SA	VP0
+240	South Sandwich Is.	SA	VP0
+241	South Shetland Is.	SA	VP0
+64	Bermuda	NA	VP9
+33	Chagos Is.	AF	VQ9
+321	Hong Kong	AS	VR
+324	India	AS	VU
+11	Andaman & Nicobar Is.	AS	VU4
+142	Lakshadweep Is.	AS	VU7
+50	Mexico	NA	XA-XI
+204	Revillagigedo	NA	XA4-XI4
+480	Burkina Faso	AF	XT
+312	Cambodia	AS	XU
+143	Laos	AS	XW
+152	Macao	AS	XX9
+309	Myanmar	AS	XY-XZ
+3	Afghanistan	AS	YA, T6
+327	Indonesia	OC	YB-YH
+333	Iraq	AS	YI
+158	Vanuatu	OC	YJ
+384	Syria	AS	YK
+145	Latvia	EU	YL
+86	Nicaragua	NA	YN,H6-7,HT
+275	Romania	EU	YO-YR
+74	El Salvador	NA	YS, HU
+296	Serbia	EU	YT-YU
+148	Venezuela	SA	YV-YY, 4M
+17	Aves I.	NA	YV0
+452	Zimbabwe	AF	Z2
+502	North Macedonia	EU	Z3
+522	Republic of Kosovo	EU	Z61,
+521	South Sudan (Rep of)	AF	Z8
+7	Albania	EU	ZA
+233	Gibraltar	EU	ZB2
+283	Sov. Base Areas on Cyprus	AS	ZC4
+250	St. Helena	AF	ZD7
+205	Ascension I.	AF	ZD8
+274	Tristan da Cunha & Gough I.	AF	ZD9
+69	Cayman Is.	NA	ZF
+270	Tokelau Is.	OC	ZK3
+170	New Zealand	OC	ZL-ZM
+34	Chatham Is.	OC	ZL7
+133	Kermadec Is.	OC	ZL8
+16	New Zealand Subantarctic Islands	OC	
+132	Paraguay	SA	ZP
+462	South Africa	AF	ZR-ZU
+201	Prince Edward & Marion Is.	AF	ZS8
+--DELETED--

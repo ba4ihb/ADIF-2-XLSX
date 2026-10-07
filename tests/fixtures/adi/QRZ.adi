@@ -1,0 +1,763 @@
+QRZLogbook download for N0TEST
+    Date: Mon Oct  5 13:34:48 2026
+    Bookid: 438696
+    Records: 15
+    <ADIF_VER:5>3.1.1
+    <PROGRAMID:10>QRZLogbook
+    <PROGRAMVERSION:3>2.0
+    <eoh>
+<qth:6>??????
+<my_state:2>SD
+<distance:3>456
+<time_off:4>0840
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<qrzcom_qso_upload_status:1>Y
+<my_name:4>昱轩 xxx
+<qsl_rcvd:1>N
+<my_iota:4>none
+<app_qrzlog_logid:10>1509122959
+<call:6>B6XODJ
+<station_callsign:6>B4B18F
+<gridsquare:6>AA00aa
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<cont:2>AS
+<lon:11>E116 27.500
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<country:5>China
+<band_rx:3>20M
+<app_qrzlog_qsldate:8>20261003
+<my_gridsquare:4>OM96
+<time_on:4>0840
+<lat:11>N040 16.250
+<dxcc:3>318
+<name:10>YISHA WANG
+<freq:7>14.0762
+<my_country:5>China
+<app_qrzlog_status:1>C
+<app_lotw_rxqso:19>2026-10-02 08:41:02
+<email:16>404761918@qq.com
+<my_itu_zone:2>44
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<freq_rx:7>14.0762
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<app_lotw_qso_timestamp:20>2026-10-02T08:40:14Z
+<lotw_qsl_sent:1>Y
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<eor>
+
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<freq_rx:7>14.0763
+<app_lotw_qso_timestamp:20>2026-10-02T08:33:59Z
+<app_lotw_2xqsl:1>Y
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<lotw_qsl_sent:1>Y
+<app_lotw_dxcc_entity_status:7>Current
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<band:3>20M
+<ituz:2>43
+<pfx:3>BD8
+<dxcc:3>318
+<name:9>CHEN DENG
+<lat:11>N028 45.112
+<time_on:4>0833
+<app_qrzlog_status:1>C
+<app_lotw_rxqso:19>2026-10-02 08:37:31
+<freq:7>14.0763
+<my_country:5>China
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<my_itu_zone:2>44
+<email:16>ybdcdc@gmail.com
+<my_iota:4>none
+<lotw_qslrdate:8>20261002
+<qsl_rcvd:1>N
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<call:6>B54UJO
+<app_qrzlog_logid:10>1509122960
+<state:2>SC
+<station_callsign:6>B4B18F
+<lotw_qsl_rcvd:1>Y
+<gridsquare:6>AA00aa
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<lon:11>E104 38.630
+<cont:2>AS
+<band_rx:3>20M
+<app_qrzlog_qsldate:8>20261002
+<my_gridsquare:4>OM96
+<country:5>China
+<my_state:2>SD
+<distance:4>1402
+<qth:35>YiBin City, SiChuan Province, China
+<time_off:4>0833
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<cqz:2>24
+<app_lotw_rxqsl:19>2026-10-02 08:37:31
+<my_name:4>昱轩 xxx
+<qrzcom_qso_upload_status:1>Y
+<eor>
+
+<ituz:2>45
+<dxcc:3>339
+<name:14>KAZUO NAKAMURA
+<time_on:4>0833
+<lat:11>N036 14.656
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 08:34:32
+<freq:7>14.0746
+<my_country:5>China
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_via:23>LUSVPAAAAAAAAAAAAAAAAAA
+<email:15>ja2cej@jarl.com
+<my_itu_zone:2>44
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<freq_rx:7>14.0746
+<app_lotw_qso_timestamp:20>2026-10-02T08:33:59Z
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<lotw_qsl_sent:1>Y
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<qth:22>MIDORI NAGOYA 458-0844
+<distance:4>1866
+<my_state:2>SD
+<time_off:4>0833
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<qrzcom_qso_upload_status:1>Y
+<my_iota:4>none
+<iota:6>AS-007
+<qsl_rcvd:1>N
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<call:6>JB8BNO
+<app_qrzlog_logid:10>1509122961
+<gridsquare:8>PM86TF18
+<station_callsign:6>B4B18F
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<lon:11>E137 35.566
+<cont:2>AS
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<country:5>Japan
+<eor>
+
+<lotw_qsl_sent:1>Y
+<app_lotw_modegroup:4>DATA
+<qrzcom_qso_upload_date:8>20261002
+<band:3>20M
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<freq_rx:7>14.0754
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<app_lotw_qso_timestamp:20>2026-10-02T08:24:44Z
+<my_country:5>China
+<freq:7>14.0754
+<app_lotw_rxqso:19>2026-10-02 08:25:01
+<app_qrzlog_status:1>C
+<my_itu_zone:2>44
+<email:16>4G1GOG@PROTON.ME
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<ituz:2>50
+<lat:11>N014 38.842
+<time_on:4>0824
+<name:13>Reuben Campos
+<dxcc:3>375
+<cont:2>OC
+<lon:11>E121 00.205
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<country:11>Philippines
+<my_gridsquare:4>OM96
+<app_qrzlog_qsldate:8>20261002
+<band_rx:3>20M
+<iota:6>OC-042
+<qsl_rcvd:1>N
+<my_iota:4>none
+<station_callsign:6>B4B18F
+<gridsquare:6>AA00aa
+<call:4>N06U
+<app_qrzlog_logid:10>1509122962
+<qrzcom_qso_download_status:1>Y
+<qso_date_off:8>20261002
+<qrzcom_qso_upload_status:1>Y
+<my_name:4>昱轩 xxx
+<cqz:2>27
+<time_off:4>0824
+<distance:4>2431
+<my_state:2>SD
+<qth:31>UP Campus, Diliman, Quezon City
+<my_lon:11>E116 45.066
+<my_lat:11>N036 10.524
+<eor>
+
+<app_lotw_qso_timestamp:20>2026-10-02T08:18:29Z
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<freq_rx:7>14.0766
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<band:3>20M
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<lotw_qsl_sent:1>Y
+<dxcc:3>150
+<name:11>S E Mollart
+<lat:11>S035 33.800
+<time_on:4>0818
+<ituz:2>59
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<my_itu_zone:2>44
+<app_qrzlog_status:1>C
+<app_lotw_rxqso:19>2026-10-02 08:18:32
+<freq:7>14.0766
+<my_country:5>China
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<app_qrzlog_logid:10>1509122963
+<call:6>AXYPCJ
+<station_callsign:6>B4B18F
+<gridsquare:6>AA00aa
+<my_iota:4>none
+<qsl_rcvd:1>N
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<app_qrzlog_qsldate:8>20261002
+<country:9>Australia
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<cont:2>OC
+<lon:11>E149 42.400
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<distance:4>8675
+<my_state:2>SD
+<qth:12>Majors Creek
+<time_off:4>0818
+<cqz:1>3
+<my_name:4>昱轩 xxx
+<qrzcom_qso_upload_status:1>Y
+<eor>
+
+<freq_rx:7>14.0748
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<app_lotw_qso_timestamp:20>2026-10-02T08:11:59Z
+<app_lotw_2xqsl:1>Y
+<lotw_qsl_sent:1>Y
+<app_lotw_dxcc_entity_status:7>Current
+<app_lotw_modegroup:4>DATA
+<qrzcom_qso_upload_date:8>20261002
+<band:3>20M
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<ituz:2>50
+<pfx:3>DW1
+<lat:11>N014 38.750
+<time_on:4>0811
+<name:13>Rene Enriquez
+<dxcc:3>375
+<my_country:5>China
+<freq:7>14.0748
+<app_lotw_rxqso:19>2026-10-02 08:12:02
+<app_qrzlog_status:1>C
+<my_itu_zone:2>44
+<email:17>dw1vi@hotmail.com
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<qsl_rcvd:1>N
+<lotw_qslrdate:8>20261002
+<my_iota:4>none
+<station_callsign:6>B4B18F
+<lotw_qsl_rcvd:1>Y
+<gridsquare:6>AA00aa
+<app_qrzlog_logid:10>1509122964
+<call:5>DV1U7
+<qrzcom_qso_download_status:1>Y
+<qso_date_off:8>20261002
+<lon:11>E121 02.500
+<cont:2>OC
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<country:11>Philippines
+<app_qrzlog_qsldate:8>20261002
+<my_gridsquare:4>OM96
+<band_rx:3>20M
+<time_off:4>0811
+<my_state:2>SD
+<distance:4>2431
+<qth:28>Sun Valley Estates, Antipolo
+<my_lon:11>E116 45.066
+<my_lat:11>N036 10.524
+<qrzcom_qso_upload_status:1>Y
+<app_lotw_rxqsl:19>2026-10-02 08:14:02
+<my_name:4>昱轩 xxx
+<cqz:2>27
+<eor>
+
+<app_qrzlog_logid:10>1509122965
+<call:8>JBO49BAA
+<station_callsign:6>B4B18F
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<qsl_rcvd:1>N
+<my_iota:4>none
+<country:5>Japan
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<cont:2>AS
+<lon:11>W000 00.000
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<my_state:2>SD
+<time_off:4>0805
+<qrzcom_qso_upload_status:1>Y
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<app_lotw_qso_timestamp:20>2026-10-02T08:05:59Z
+<freq_rx:7>14.0748
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<lotw_qsl_sent:1>Y
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<time_on:4>0805
+<lat:11>S000 00.000
+<dxcc:3>339
+<ituz:2>45
+<my_itu_zone:2>44
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<freq:7>14.0748
+<my_country:5>China
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 08:06:32
+<eor>
+
+<my_name:4>昱轩 xxx
+<cqz:2>30
+<qrzcom_qso_upload_status:1>Y
+<time_off:4>0803
+<distance:4>8683
+<my_state:2>SD
+<qth:9>Test City
+<my_lon:11>E116 45.066
+<my_lat:11>N036 10.524
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<lon:11>E146 12.962
+<cont:2>OC
+<my_gridsquare:4>OM96
+<band_rx:3>20M
+<country:9>Australia
+<my_iota:4>none
+<qsl_rcvd:1>N
+<qrzcom_qso_download_status:1>Y
+<qso_date_off:8>20261002
+<gridsquare:6>AA00aa
+<station_callsign:6>B4B18F
+<call:5>AXUO0
+<app_qrzlog_logid:10>1509122966
+<app_lotw_rxqso:19>2026-10-02 08:04:02
+<app_qrzlog_status:1>N
+<my_country:5>China
+<freq:7>14.0754
+<qsl_via:28>N09E7CAAAAAAAAAAAAAAAAAAAAAA
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<my_itu_zone:2>44
+<email:24>22bravojuliet1@gmail.com
+<ituz:2>59
+<name:13>Brian Dodgson
+<dxcc:3>150
+<lat:11>S036 58.399
+<time_on:4>0803
+<app_lotw_modegroup:4>DATA
+<qrzcom_qso_upload_date:8>20261002
+<lotw_qsl_sent:1>Y
+<band:3>20M
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<freq_rx:7>14.0754
+<app_lotw_qso_timestamp:20>2026-10-02T08:03:14Z
+<eor>
+
+<app_lotw_rxqso:19>2026-10-02 07:56:31
+<app_qrzlog_status:1>N
+<my_country:5>China
+<freq:7>14.0756
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<my_itu_zone:2>44
+<ituz:2>45
+<name:16>Hiroshi Nakamura
+<dxcc:3>339
+<time_on:4>0750
+<lat:11>N035 33.972
+<app_lotw_modegroup:4>DATA
+<qrzcom_qso_upload_date:8>20261002
+<lotw_qsl_sent:1>Y
+<band:3>20M
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<freq_rx:7>14.0756
+<app_lotw_qso_timestamp:20>2026-10-02T07:50:59Z
+<my_name:4>昱轩 xxx
+<cqz:2>25
+<qrzcom_qso_upload_status:1>Y
+<time_off:4>0750
+<qth:25>Sagamihara-city, Kanagawa
+<distance:4>2023
+<my_state:2>SD
+<my_lon:11>E116 45.066
+<my_lat:11>N036 10.524
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<lon:11>E139 14.731
+<cont:2>AS
+<my_gridsquare:4>OM96
+<band_rx:3>20M
+<country:5>Japan
+<my_iota:4>none
+<iota:6>AS-007
+<qsl_rcvd:1>N
+<qrzcom_qso_download_status:1>Y
+<qso_date_off:8>20261002
+<gridsquare:6>AA00aa
+<station_callsign:6>B4B18F
+<app_qrzlog_logid:10>1509122967
+<call:6>7NYLMU
+<eor>
+
+<app_lotw_qso_timestamp:20>2026-10-02T07:50:59Z
+<freq_rx:7>14.0755
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<lotw_qsl_sent:1>Y
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<time_on:4>0750
+<lat:11>N034 51.738
+<dxcc:3>339
+<name:22>YOSHIMURA Toyoki "Son"
+<ituz:2>45
+<email:15>jh3hgi@jarl.com
+<my_itu_zone:2>44
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_via:27>BQARQTAAAAAAAAAAAAAAAAAAAAA
+<freq:7>14.0755
+<my_country:5>China
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 07:52:02
+<app_qrzlog_logid:10>1509122968
+<call:6>7L45XK
+<gridsquare:6>AA00aa
+<station_callsign:6>B4B18F
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<iota:6>AS-007
+<qsl_rcvd:1>N
+<my_iota:4>none
+<country:5>Japan
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<cont:2>AS
+<lon:11>E134 23.310
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<qth:13>Ako-gun Hyogo
+<my_state:2>SD
+<distance:4>1600
+<time_off:4>0750
+<qrzcom_qso_upload_status:1>Y
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<eor>
+
+<iota:6>AS-007
+<qsl_rcvd:1>N
+<my_iota:4>none
+<app_qrzlog_logid:10>1509122969
+<call:6>JCD9DN
+<station_callsign:6>B4B18F
+<gridsquare:6>AA00aa
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<cont:2>AS
+<lon:11>E140 50.122
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<country:5>Japan
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<qth:21>AOBA ward,SENDAI city
+<my_state:2>SD
+<distance:4>2139
+<time_off:4>0747
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<qrzcom_qso_upload_status:1>Y
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<freq_rx:7>14.0757
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<app_lotw_qso_timestamp:20>2026-10-02T07:47:29Z
+<lotw_qsl_sent:1>Y
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<ituz:2>45
+<time_on:4>0747
+<lat:11>N038 17.554
+<dxcc:3>339
+<name:20>SATOSHI:TOSHI ISHIDA
+<freq:7>14.0757
+<my_country:5>China
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 07:48:02
+<my_itu_zone:2>44
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_via:17>EPQSKKAAAAAAAAAAA
+<eor>
+
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<app_qrzlog_qsldate:8>20261002
+<country:5>Japan
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<lon:11>E133 57.480
+<cont:2>AS
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<app_qrzlog_logid:10>1509122970
+<call:6>JA7HKN
+<station_callsign:6>B4B18F
+<gridsquare:6>AA00aa
+<my_iota:4>none
+<qsl_rcvd:1>N
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<qrzcom_qso_upload_status:1>Y
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<distance:4>1575
+<my_state:2>SD
+<qth:21>Takamatsu City Kagawa
+<time_off:4>0736
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<band:3>20M
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<lotw_qsl_sent:1>Y
+<app_lotw_qso_timestamp:20>2026-10-02T07:36:14Z
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<freq_rx:7>14.0754
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<qsl_via:26>B5WEZQAAAAAAAAAAAAAAAAAAAA
+<my_itu_zone:2>44
+<email:15>ja5oau@jarl.com
+<app_qrzlog_status:1>C
+<app_lotw_rxqso:19>2026-10-02 07:42:01
+<freq:7>14.0754
+<my_country:5>China
+<dxcc:3>339
+<name:15>Shinji Watanabe
+<lat:11>N034 16.248
+<time_on:4>0736
+<ituz:2>45
+<eor>
+
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_via:26>EPGDZHAAAAAAAAAAAAAAAAAAAA
+<email:15>jh1ncz@jarl.com
+<my_itu_zone:2>44
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 07:39:02
+<freq:7>14.0766
+<my_country:5>China
+<dxcc:3>339
+<name:25>Toshiyuki "Tosy" Fujiwara
+<time_on:4>0736
+<lat:11>N035 41.877
+<ituz:2>45
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<lotw_qsl_sent:1>Y
+<app_lotw_qso_timestamp:20>2026-10-02T07:36:14Z
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<freq_rx:7>14.0766
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<qrzcom_qso_upload_status:1>Y
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<qth:6>Tokyo,
+<distance:4>2046
+<my_state:2>SD
+<time_off:4>0736
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<country:5>Japan
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<lon:11>E139 31.516
+<cont:2>AS
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<call:6>7MPDIC
+<app_qrzlog_logid:10>1509122971
+<gridsquare:6>AA00aa
+<station_callsign:6>B4B18F
+<my_iota:4>none
+<qsl_rcvd:1>N
+<iota:6>AS-007
+<eor>
+
+<ituz:2>45
+<dxcc:3>339
+<name:15>Yoshio Kawasaki
+<time_on:4>0736
+<lat:11>N034 55.944
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 07:37:01
+<freq:7>14.0754
+<my_country:5>China
+<qsl_sent:1>N
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_via:30>N0L39LAAAAAAAAAAAAAAAAAAAAAAAA
+<email:15>ja3klc@jarl.com
+<my_itu_zone:2>44
+<my_cq_zone:2>24
+<qrzcom_qso_download_date:8>20261005
+<freq_rx:7>14.0754
+<app_lotw_qso_timestamp:20>2026-10-02T07:36:14Z
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<lotw_qsl_sent:1>Y
+<app_lotw_owncall:6>B4B18F
+<qso_date:8>20261002
+<band:3>20M
+<qth:30>Fushimi-ku, Kyoto-city, Kyoto,
+<distance:4>1719
+<my_state:2>SD
+<time_off:4>0736
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<cqz:2>25
+<my_name:4>昱轩 xxx
+<qrzcom_qso_upload_status:1>Y
+<my_iota:4>none
+<iota:6>AS-007
+<qsl_rcvd:1>N
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<app_qrzlog_logid:10>1509122972
+<call:6>JBGSHB
+<station_callsign:6>B4B18F
+<gridsquare:6>AA00aa
+<app_lotw_my_dxcc_entity_status:7>Current
+<mode:3>FT8
+<lon:11>E135 43.547
+<cont:2>AS
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<country:5>Japan
+<eor>
+
+<qrzcom_qso_upload_status:1>Y
+<my_name:4>昱轩 xxx
+<my_state:2>SD
+<distance:4>1869
+<qth:12>Chino Nagano
+<time_off:4>0705
+<my_lat:11>N036 10.524
+<my_lon:11>E116 45.066
+<lon:11>E137 37.500
+<cont:2>AS
+<mode:3>FT8
+<app_lotw_my_dxcc_entity_status:7>Current
+<country:5>Japan
+<band_rx:3>20M
+<my_gridsquare:4>OM96
+<qsl_rcvd:1>N
+<my_iota:4>none
+<app_qrzlog_logid:10>1509122973
+<call:6>7JMVYO
+<gridsquare:6>AA00aa
+<station_callsign:6>B4B18F
+<qso_date_off:8>20261002
+<qrzcom_qso_download_status:1>Y
+<freq:7>14.0763
+<my_country:5>China
+<app_qrzlog_status:1>N
+<app_lotw_rxqso:19>2026-10-02 07:09:02
+<my_itu_zone:2>44
+<my_city:9>Test Cityxxxxxxxxxxxxxxxxxx
+<qsl_sent:1>N
+<lat:11>N036 13.750
+<time_on:4>0705
+<dxcc:3>339
+<name:14>Yasuo Horikawa
+<lotw_qsl_sent:1>Y
+<qrzcom_qso_upload_date:8>20261002
+<app_lotw_modegroup:4>DATA
+<qso_date:8>20261002
+<app_lotw_owncall:6>B4B18F
+<band:3>20M
+<freq_rx:7>14.0763
+<qrzcom_qso_download_date:8>20261005
+<my_cq_zone:2>24
+<app_lotw_qso_timestamp:20>2026-10-02T07:05:44Z
+<eor>
+

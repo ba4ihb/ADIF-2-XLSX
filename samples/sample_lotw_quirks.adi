@@ -1,0 +1,22 @@
+LOTW-style ADIF export sample -- exercises the quirks a real parser must survive.
+
+1. Header fields and QSO fields, with <EOH> omitted entirely.
+2. Lower-case field names.
+3. Whitespace padding inside field values.
+4. A repeated field name within one record (later value wins).
+5. APP_LoTW_* application-defined fields, incl. a numeric-suffixed name.
+6. A record with FREQ but no BAND (band must be derived from frequency).
+7. A record with BAND but no FREQ.
+8. <COMMENT:0> zero-length value.
+9. Unknown/proprietary fields that must still surface as columns.
+10. Trailing free text that is not ADIF and must be ignored.
+
+<ADIF_VER:5>3.1.7 <PROGRAMID:4>LOTW <CREATED_TIMESTAMP:15>20250102 030405
+
+<CALL:5>KH6BB<QSO_DATE:8>20080608<time_on:6>180108<TIME_OFF:6>180245<FREQ:8>14.26300<BAND:3>20M<MODE:3>SSB<RST_SENT:2>56<RST_RCVD:2>59<STATION_CALLSIGN:6>N0CALL<APP_LOTW_CREDIT_GRANTED:13>DXCC;WAS;WAC;<APP_LOTW_QSL_SENT:1>Y<APP_LOTW_QSL_RCVD:1>Y<APP_LOTW_NUMREC:1>1<EOR>
+<CALL:5>DL1AB<QSO_DATE:8>20240115<TIME_ON:6>071503<FREQ:9>14.074000<BAND:3>20M<MODE:4>MFSK<SUBMODE:3>FT8<RST_SENT:3>-12<RST_RCVD:3>-08<STATION_CALLSIGN:6>N0CALL<APP_LOTW_2xQSL:1>Y<APP_LOTW_MODEGROUP:4>DATA<DXCC:3>230<COUNTRY:20>Fed. Rep. of Germany<EOR>
+<CALL:5>JA1XX<QSO_DATE:8>20240116<TIME_ON:4>2330<BAND:3>40M<MODE:2>CW<RST_SENT:3>599<RST_RCVD:3>579<STATION_CALLSIGN:6>N0CALL<APP_LOTW_RP:1>N<EOR>
+<CALL:4>W1AW<QSO_DATE:8>20240120<TIME_ON:6>150000<FREQ:8>21.25000<BAND:3>15M<MODE:3>SSB<MODE:2>CW<RST_SENT:2>59<RST_RCVD:2>59<STATION_CALLSIGN:6>N0CALL<COMMENT:0><EOR>
+<CALL:6>EA5ABC<QSO_DATE:8>20240606<TIME_ON:6>161500<FREQ:8>24.91500<MODE:3>SSB<RST_SENT:2>53<RST_RCVD:2>55<STATION_CALLSIGN:6>N0CALL<PROP_MODE:6>  ES  <SAT_NAME:5>RS-44<EOR>
+
+Some trailing free text that is not ADIF and must be ignored.

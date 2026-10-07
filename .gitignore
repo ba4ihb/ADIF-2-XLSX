@@ -1,0 +1,39 @@
+# Build output --------------------------------------------------------------
+build/
+dist/
+*.spec
+
+# Release archives ----------------------------------------------------------
+# The ZIPs are attached to a GitHub Release, not committed: 390 MB of binaries
+# in git history would be permanent and would not help anyone.
+release/
+
+# Python --------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Test and tooling output ---------------------------------------------------
+*.xlsx
+!samples/sample_output.xlsx
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Generated fixtures --------------------------------------------------------
+# The six anonymised platform exports under tests/fixtures/adi/ ARE committed:
+# they are the most valuable regression fixtures in the project.  Regenerate
+# them from the originals with:  python tests/make_fixtures.py <folder>
+tests/fixtures/adi/*.tmp
+
+# Editors and OS ------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini

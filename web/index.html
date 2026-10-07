@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADIF 转 Excel ✨</title>
+<link rel="icon" href="icon.png">
+<style>
+  :root {
+    --cream: #FFFBF7;
+    --card: #FFFFFF;
+    --blush: #FFE4EC;
+    --blush-deep: #FFC9DA;
+    --pink: #FF7EA8;
+    --pink-dark: #F06694;
+    --lavender: #EFE6FF;
+    --mint: #DFF6EE;
+    --mint-text: #2F8F6F;
+    --ink: #46404B;
+    --ink-soft: #8C8494;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Microsoft YaHei UI", "PingFang SC", "Hiragino Sans GB",
+                 system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 34px 20px 60px; }
+
+  header h1 {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    font-size: 34px; font-weight: 700; margin: 0; letter-spacing: -0.5px;
+  }
+  header h1 .arrow { color: var(--pink); }
+  header p { margin: 6px 0 22px; color: var(--ink-soft); font-size: 13px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--blush-deep);
+    border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+  }
+  .card.lavender { border-color: var(--lavender); }
+  .card h2 {
+    font-size: 14px; margin: 0 0 12px; display: flex;
+    align-items: center; gap: 8px; font-weight: 700;
+  }
+  .card h2 .count {
+    margin-left: auto; font-weight: 400; font-size: 12px; color: var(--ink-soft);
+  }
+
+  /* 拖放区 */
+  .drop {
+    border: 2px dashed var(--blush-deep); border-radius: 14px;
+    background: #FFF8FB; padding: 26px 16px; text-align: center;
+    color: var(--ink-soft); cursor: pointer; transition: .15s;
+  }
+  .drop:hover, .drop.over { background: var(--blush); border-color: var(--pink); }
+  .drop strong { color: var(--ink); font-size: 15px; }
+  .drop .hint { font-size: 12px; margin-top: 4px; }
+
+  /* 文件列表 */
+  ul.files { list-style: none; margin: 12px 0 0; padding: 0; }
+  ul.files li {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: #FFF8FB; border-radius: 10px; margin-bottom: 6px;
+    font-size: 13px;
+  }
+  ul.files li .name { flex: 1; overflow: hidden; text-overflow: ellipsis;
+                      white-space: nowrap; }
+  ul.files li .recs { color: var(--ink-soft); font-size: 12px; }
+  ul.files li .err { color: #D6455B; font-size: 12px; }
+  ul.files li button {
+    border: 0; background: transparent; color: var(--ink-soft);
+    cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 4px;
+  }
+  ul.files li button:hover { color: var(--pink-dark); }
+
+  /* 按钮 */
+  button.btn {
+    border: 0; border-radius: 999px; padding: 9px 18px; font-size: 13px;
+    font-family: inherit; cursor: pointer; background: var(--blush);
+    color: var(--ink); transition: .15s;
+  }
+  button.btn:hover { background: var(--blush-deep); }
+  button.btn.primary {
+    background: var(--pink); color: #fff; font-size: 15px; font-weight: 700;
+    padding: 14px 40px; display: block; width: 100%; margin-top: 4px;
+  }
+  button.btn.primary:hover { background: var(--pink-dark); }
+  button.btn.primary:disabled { background: #E8E4EC; color: #B3AEB8;
+                                cursor: default; }
+  button.btn.ghost { background: var(--lavender); }
+  button.btn.ghost:hover { background: #E2D6FA; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* 输入 */
+  input[type=text] {
+    width: 100%; padding: 9px 12px; font-size: 13px; font-family: inherit;
+    border: 1px solid var(--blush-deep); border-radius: 10px;
+    background: #FFF8FB; color: var(--ink);
+  }
+  input[type=text]:focus { outline: 2px solid var(--blush-deep); }
+  label.check { display: flex; align-items: center; gap: 7px; font-size: 13px;
+                cursor: pointer; }
+  label.check input { accent-color: var(--pink); width: 15px; height: 15px; }
+
+  /* 选择列 */
+  .fields { height: 300px; overflow-y: auto; padding-right: 6px;
+            margin-top: 10px; }
+  .fields h3 { font-size: 12px; color: var(--pink-dark); margin: 12px 0 6px;
+               position: sticky; top: 0; background: var(--card);
+               padding: 4px 0; }
+  .fields h3.plain { color: var(--ink); }
+  .field {
+    display: flex; align-items: baseline; gap: 8px; padding: 3px 2px;
+    font-size: 13px;
+  }
+  .field.locked { color: var(--ink); }
+  .field input { accent-color: var(--pink); width: 15px; height: 15px;
+                 flex: none; }
+  .field .tick { color: var(--pink); font-weight: 700; width: 15px;
+                 text-align: center; flex: none; }
+  .field .code { margin-left: auto; color: var(--ink-soft); font-size: 11px;
+                 font-family: "Segoe UI", system-ui, sans-serif; }
+
+  .info {
+    background: var(--mint); color: var(--mint-text); border-radius: 12px;
+    padding: 11px 14px; font-size: 12.5px; margin-top: 4px;
+  }
+
+  /* 结果 */
+  #result { display: none; }
+  #result.show { display: block; }
+  .stat { display: flex; gap: 22px; margin: 4px 0 12px; flex-wrap: wrap; }
+  .stat div { font-size: 12px; color: var(--ink-soft); }
+  .stat strong { display: block; font-size: 20px; color: var(--ink);
+                 font-family: "Segoe UI", system-ui, sans-serif; }
+  .tag { display: inline-block; background: var(--mint); color: var(--mint-text);
+         border-radius: 8px; padding: 2px 8px; font-size: 11.5px;
+         margin: 2px 4px 2px 0; }
+  .warn { background: #FFF6E5; border-color: #FFE0A3; }
+  .warn h2 { color: #9A6B00; }
+
+  #toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 10px 20px;
+    border-radius: 999px; font-size: 13px; opacity: 0; pointer-events: none;
+    transition: .25s; max-width: 90vw;
+  }
+  #toast.show { opacity: .95; }
+  .busy { opacity: .55; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>ADIF <span class="arrow">→</span> Excel ✨</h1>
+    <p>把业余无线电日志整理成一张干净的表格 · 所有时间为 UTC，不做时区换算</p>
+  </header>
+
+  <!-- 1. 日志文件 -->
+  <section class="card">
+    <h2>📻 日志文件 <span class="count" id="fileCount">还没有文件</span></h2>
+    <div class="drop" id="drop">
+      <strong>拖放 ADIF 文件到这里</strong>
+      <div class="hint">或者点击选择文件（可多选）</div>
+    </div>
+    <input type="file" id="picker" multiple accept=".adi,.adif" hidden>
+    <input type="file" id="folderPicker" webkitdirectory hidden>
+    <ul class="files" id="fileList"></ul>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="addFolder">🗂 选择文件夹</button>
+      <button class="btn" id="clearFiles">清空</button>
+      <button class="btn ghost" id="readFiles" disabled>读取字段</button>
+    </div>
+  </section>
+
+  <!-- 2. 要输出的列 -->
+  <section class="card lavender">
+    <h2>📋 要输出的列 <span class="count" id="columnCount"></span></h2>
+    <div class="row">
+      <button class="btn" data-preset="common">常用</button>
+      <button class="btn" data-preset="all">全部</button>
+      <button class="btn" data-preset="required">仅必选</button>
+      <button class="btn ghost" id="toggleAll" style="margin-left:auto">
+        展开全部附加列</button>
+    </div>
+    <div class="fields" id="fields"></div>
+  </section>
+
+  <!-- 3. 保存到 -->
+  <section class="card lavender">
+    <h2>💾 保存到 <span class="count" id="saveMode">留空 = 浏览器下载</span></h2>
+    <input type="text" id="output" spellcheck="false"
+           placeholder="留空则下载到浏览器的下载目录；填路径则直接写到该位置">
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="clearOutput">清空（改为下载）</button>
+      <button class="btn ghost" id="useDesktop">填默认位置</button>
+    </div>
+    <div class="info" id="infoLine"></div>
+  </section>
+
+  <!-- 4. 选项 + 开始 -->
+  <section class="card">
+    <div class="row" style="margin-bottom:14px">
+      <label class="check"><input type="checkbox" id="openAfter" checked>
+        完成后提示保存位置</label>
+      <label class="check"><input type="checkbox" id="subfolders" checked>
+        文件夹包含子目录</label>
+    </div>
+    <button class="btn primary" id="start" disabled>开始转换 ✨</button>
+  </section>
+
+  <!-- 结果 -->
+  <section class="card" id="result">
+    <h2>🎉 转换完成</h2>
+    <div class="stat">
+      <div><strong id="rTotal">0</strong>条记录</div>
+      <div><strong id="rCols">0</strong>输出列</div>
+      <div><strong id="rFiles">0</strong>来源文件</div>
+    </div>
+    <div id="rWhere"></div>
+    <div id="rColumns" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card warn" id="warnBox" style="display:none">
+    <h2>⚠️ 需要注意</h2>
+    <div id="warnBody"></div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+let TOKEN = "";
+let CATALOGUE = { required: [], optional: [], mandatory: [], presets: {} };
+let ENV = {};
+let files = [];              // {file, name, records, error}
+let available = null;        // 读取后得到的可用字段
+let chosen = null;           // null = 全部有数据的列
+
+const $ = (id) => document.getElementById(id);
+
+function toast(msg, ms = 2600) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("show"), ms);
+}
+
+function busy(on) {
+  document.querySelectorAll("button, input").forEach(el => {
+    if (on) { el.dataset.wasDisabled = el.disabled; el.disabled = true; }
+    else if (el.dataset.wasDisabled === "false") { el.disabled = false; }
+  });
+  document.body.classList.toggle("busy", on);
+}
+
+/* ---------- 初始化 ---------- */
+async function init() {
+  try {
+    const res = await fetch("/api/info");
+    const info = await res.json();
+    if (!info.ok) throw new Error(info.error || "服务未就绪");
+    TOKEN = info.token;
+    CATALOGUE = {
+      required: info.required, optional: info.optional,
+      mandatory: info.mandatory, presets: info.presets,
+    };
+    ENV = info;
+    $("output").value = info.output || "";
+    updateSaveMode();
+    $("infoLine").textContent =
+      `自动附上 DXCC 实体与 QSL 平信邮资（${info.weight_g} 克，` +
+      `资费核对于 ${info.rates_verified}）；` +
+      `某列全空通常是导出软件没有提供该字段，Summary 表会逐列说明`;
+    renderFields();
+  } catch (err) {
+    toast("无法连接本地服务：" + err.message, 6000);
+  }
+}
+
+/* ---------- 文件 ---------- */
+function addFiles(list) {
+  const seen = new Set(files.map(f => f.name + ":" + f.file.size));
+  for (const file of list) {
+    const key = file.name + ":" + file.size;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    files.push({ file, name: file.name, records: null, error: "" });
+  }
+  available = null;
+  renderFiles();
+}
+
+function renderFiles() {
+  const ul = $("fileList");
+  ul.innerHTML = "";
+  files.forEach((item, i) => {
+    const li = document.createElement("li");
+    const icon = "📄";
+    let extra = "";
+    if (item.error) extra = `<span class="err">${escapeHtml(item.error)}</span>`;
+    else if (item.records !== null)
+      extra = `<span class="recs">${item.records} 条</span>`;
+    li.innerHTML =
+      `<span>${icon}</span><span class="name">${escapeHtml(item.name)}</span>` +
+      extra + `<button title="移除">✕</button>`;
+    li.querySelector("button").onclick = () => {
+      files.splice(i, 1);
+      available = null;
+      renderFiles();
+    };
+    ul.appendChild(li);
+  });
+  $("fileCount").textContent = files.length ? `共 ${files.length} 项` : "还没有文件";
+  $("readFiles").disabled = files.length === 0;
+  $("start").disabled = files.length === 0;
+}
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
+/* ---------- 选择列 ---------- */
+function renderFields() {
+  const box = $("fields");
+  box.innerHTML = "";
+  const lockedNames = new Set(CATALOGUE.required);
+
+  const required = document.createElement("h3");
+  required.textContent = `必选列（共 ${CATALOGUE.required.length} 列，始终输出）`;
+  box.appendChild(required);
+  CATALOGUE.required.forEach(f => {
+    const row = document.createElement("div");
+    row.className = "field locked";
+    row.innerHTML = `<span class="tick">✓</span>` +
+      `<span>${escapeHtml(f.label)}</span>` +
+      `<span class="code">${escapeHtml(f.name)}</span>`;
+    row.title = f.hint;
+    box.appendChild(row);
+  });
+
+  const optional = CATALOGUE.optional;
+  const head = document.createElement("h3");
+  head.className = "plain";
+  head.textContent = "附加列（勾选后输出；不勾选时只输出有数据的）";
+  box.appendChild(head);
+
+  optional.forEach(f => {
+    const row = document.createElement("label");
+    row.className = "field";
+    row.title = f.hint;
+    const box_ = document.createElement("input");
+    box_.type = "checkbox";
+    box_.dataset.name = f.name;
+    box_.checked = available ? available.includes(f.name)
+                             : CATALOGUE.presets.common.includes(f.name);
+    box_.onchange = updateColumnCount;
+    row.appendChild(box_);
+    const label = document.createElement("span");
+    label.textContent = f.label;
+    row.appendChild(label);
+    const code = document.createElement("span");
+    code.className = "code";
+    code.textContent = f.name + (f.derived ? " · 自动" : "");
+    row.appendChild(code);
+    box.appendChild(row);
+  });
+  updateColumnCount();
+}
+
+function boxes() {
+  return Array.from(document.querySelectorAll('#fields input[type=checkbox]'));
+}
+
+function updateColumnCount() {
+  const on = boxes().filter(b => b.checked).length + CATALOGUE.required.length;
+  const total = CATALOGUE.required.length + CATALOGUE.optional.length;
+  $("columnCount").textContent = `将输出 ${on} 列（可选 ${total - CATALOGUE.required.length} 项）`;
+}
+
+function applyPreset(kind) {
+  const on = new Set();
+  if (kind === "all") {
+    boxes().forEach(b => { b.checked = true; });
+  } else if (kind === "required") {
+    boxes().forEach(b => { b.checked = false; });
+  } else {
+    const preset = new Set(CATALOGUE.presets.common);
+    boxes().forEach(b => { b.checked = preset.has(b.dataset.name); });
+  }
+  updateColumnCount();
+}
+
+function selectedColumns() {
+  const on = boxes().filter(b => b.checked).map(b => b.dataset.name);
+  if (on.length === 0) return [];             // 仅必选
+  const all = CATALOGUE.optional.length;
+  if (on.length === all) return null;         // 全部：交给后端按“有数据”决定
+  return on;
+}
+
+/* ---------- 上传 ---------- */
+async function buildBody() {
+  if (files.length === 1) {
+    return await files[0].file.arrayBuffer();
+  }
+  // 多个文件打成一个 zip，一次请求送达。
+  const zip = new ZipWriter();
+  for (const item of files) {
+    zip.add(item.name, new Uint8Array(await item.file.arrayBuffer()));
+  }
+  return zip.finish();
+}
+
+async function readFields() {
+  if (!files.length) return;
+  busy(true);
+  try {
+    const body = await buildBody();
+    const res = await fetch("/api/preview", {
+      method: "POST", body,
+      headers: { "X-Adif2xlsx-Token": TOKEN },
+    });
+    const data = await res.json();
+    if (!data.ok) { toast(data.error || "读取失败", 5000); return; }
+    data.files.forEach((got, i) => {
+      if (files[i] && files[i].name === got.name) {
+        files[i].records = got.records;
+        files[i].error = got.error;
+      }
+    });
+    available = data.available;
+    renderFiles();
+    renderFields();
+    toast(`读取到 ${data.available.length} 个可用字段`);
+  } catch (err) {
+    toast("读取失败：" + err.message, 5000);
+  } finally {
+    busy(false);
+  }
+}
+
+async function convert() {
+  if (!files.length) return;
+  busy(true);
+  $("result").classList.remove("show");
+  $("warnBox").style.display = "none";
+  try {
+    const body = await buildBody();
+    const headers = { "X-Adif2xlsx-Token": TOKEN };
+    const cols = selectedColumns();
+    if (cols !== null) {
+      headers["X-Adif2xlsx-Columns"] = encodeURIComponent(JSON.stringify(cols));
+    }
+    const output = $("output").value.trim();
+    if (output) headers["X-Adif2xlsx-Output"] = encodeURIComponent(output);
+
+    const res = await fetch("/api/convert", { method: "POST", body, headers });
+    if (output) {
+      const data = await res.json();
+      if (!data.ok) { toast(data.error || "转换失败", 6000); return; }
+      showResult(data);
+    } else {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        toast(data.error || "转换失败", 6000);
+        return;
+      }
+      const blob = await res.blob();
+      const report = JSON.parse(decodeURIComponent(
+        res.headers.get("X-Adif2xlsx-Report") || "%7B%7D"));
+      downloadBlob(blob, "adif_export.xlsx");
+      showResult(report);
+    }
+  } catch (err) {
+    toast("转换失败：" + err.message, 6000);
+  } finally {
+    busy(false);
+  }
+}
+
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+function showResult(report) {
+  $("rTotal").textContent = report.total || 0;
+  $("rCols").textContent = report.columns || 0;
+  $("rFiles").textContent = Object.keys(report.sources || {}).length;
+  $("rWhere").innerHTML = report.saved_to
+    ? `已保存到：<code>${escapeHtml(report.saved_to)}</code>`
+    : "已开始下载：<code>adif_export.xlsx</code>";
+  const names = report.column_names || [];
+  $("rColumns").innerHTML = names.length
+    ? names.map(n => `<span class="tag">${escapeHtml(n)}</span>`).join("")
+    : "";
+  $("result").classList.add("show");
+
+  const notes = [];
+  if (report.skipped && report.skipped.length)
+    notes.push("跳过 " + report.skipped.length + " 个文件：" + report.skipped.join("；"));
+  if (report.incomplete)
+    notes.push(`${report.incomplete} 条记录有字段为空（源文件本身没有导出该字段），Summary 表已逐列说明`);
+  if (report.entity_unknown)
+    notes.push(`${report.entity_unknown} 条记录未能判定 DXCC 实体（该呼号前缀有歧义或不在表中）`);
+  const tags = Object.keys(report.unknown_tags || {});
+  if (tags.length)
+    notes.push("忽略了不认识的标记：" + tags.slice(0, 8).join("、"));
+  if (notes.length) {
+    $("warnBody").innerHTML = notes.map(n => `<p style="margin:6px 0">${escapeHtml(n)}</p>`).join("");
+    $("warnBox").style.display = "block";
+  }
+  if ($("openAfter").checked && report.saved_to) {
+    toast("已保存到 " + report.saved_to, 5000);
+  }
+}
+
+/* ---------- 极简 zip 写入器（store，不压缩）----------
+   浏览器没有内置打包接口，多文件时打成一个 zip 一起上传，
+   避免为每个文件发一次请求。 */
+class ZipWriter {
+  constructor() { this.parts = []; this.central = []; this.offset = 0; }
+  add(name, bytes) {
+    const nameBytes = new TextEncoder().encode(name);
+    const crc = crc32(bytes);
+    const local = new Uint8Array(30 + nameBytes.length);
+    const dv = new DataView(local.buffer);
+    dv.setUint32(0, 0x04034b50, true);
+    dv.setUint16(4, 20, true);
+    dv.setUint16(6, 0x0800, true);          // UTF-8 名称
+    dv.setUint16(8, 0, true);               // store
+    dv.setUint32(14, crc, true);
+    dv.setUint32(18, bytes.length, true);
+    dv.setUint32(22, bytes.length, true);
+    dv.setUint16(26, nameBytes.length, true);
+    local.set(nameBytes, 30);
+
+    const central = new Uint8Array(46 + nameBytes.length);
+    const cv = new DataView(central.buffer);
+    cv.setUint32(0, 0x02014b50, true);
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, bytes.length, true);
+    cv.setUint32(24, bytes.length, true);
+    cv.setUint16(28, nameBytes.length, true);
+    cv.setUint32(42, this.offset, true);
+    central.set(nameBytes, 46);
+
+    this.parts.push(local, bytes);
+    this.central.push(central);
+    this.offset += local.length + bytes.length;
+  }
+  finish() {
+    const centralSize = this.central.reduce((n, c) => n + c.length, 0);
+    const end = new Uint8Array(22);
+    const ev = new DataView(end.buffer);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(8, this.central.length, true);
+    ev.setUint16(10, this.central.length, true);
+    ev.setUint32(12, centralSize, true);
+    ev.setUint32(16, this.offset, true);
+    const all = [...this.parts, ...this.central, end];
+    const total = all.reduce((n, p) => n + p.length, 0);
+    const out = new Uint8Array(total);
+    let at = 0;
+    for (const part of all) { out.set(part, at); at += part.length; }
+    return out;
+  }
+}
+
+const CRC_TABLE = (() => {
+  const table = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    table[i] = c >>> 0;
+  }
+  return table;
+})();
+
+function crc32(bytes) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i++) {
+    c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  }
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+/* ---------- 事件绑定 ---------- */
+const drop = $("drop");
+drop.onclick = () => $("picker").click();
+$("picker").onchange = (e) => { addFiles(e.target.files); e.target.value = ""; };
+$("folderPicker").onchange = (e) => { addFiles(e.target.files); e.target.value = ""; };
+$("addFolder").onclick = () => $("folderPicker").click();
+$("clearFiles").onclick = () => { files = []; available = null;
+                                  renderFiles(); renderFields(); };
+$("readFiles").onclick = readFields;
+$("start").onclick = convert;
+
+["dragenter", "dragover"].forEach(ev => {
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault(); drop.classList.add("over");
+  });
+});
+["dragleave", "drop"].forEach(ev => {
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault(); drop.classList.remove("over");
+  });
+});
+drop.addEventListener("drop", (e) => {
+  if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+});
+
+document.querySelectorAll("[data-preset]").forEach(btn => {
+  btn.onclick = () => applyPreset(btn.dataset.preset);
+});
+
+// "留空 = 下载" is the point of a web tool, so the field starts empty and says
+// which mode is active.
+function updateSaveMode() {
+  const filled = $("output").value.trim().length > 0;
+  $("saveMode").textContent = filled ? "写入该路径" : "留空 = 浏览器下载";
+}
+$("output").addEventListener("input", updateSaveMode);
+$("clearOutput").onclick = () => {
+  $("output").value = "";
+  updateSaveMode();
+  toast("已改为直接下载");
+};
+$("useDesktop").onclick = () => {
+  $("output").value = ENV.suggested_output || "";
+  updateSaveMode();
+  toast("将写入 " + $("output").value, 4000);
+};
+
+// The column list is tall; let it be opened and collapsed so the page stays
+// scannable instead of being one long wall of checkboxes.
+$("toggleAll").onclick = () => {
+  const box = $("fields");
+  const open = box.style.height === "auto";
+  box.style.height = open ? "300px" : "auto";
+  $("toggleAll").textContent = open ? "展开全部附加列" : "收起";
+};
+
+init();
+</script>
+</body>
+</html>

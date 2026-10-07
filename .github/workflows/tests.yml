@@ -1,0 +1,77 @@
+name: tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ["3.10", "3.12"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install openpyxl
+
+      - name: Lint (ruff)
+        run: |
+          pip install ruff
+          ruff check .
+
+      - name: ADIF enumeration contract tests
+        run: python tests/test_enumerations.py
+
+      - name: DXCC unit tests
+        run: python tests/test_dxcc.py
+
+      - name: QSL postage unit tests
+        run: python tests/test_postage.py
+
+      - name: End-to-end acceptance tests
+        run: python tests/test_acceptance.py
+
+      - name: Desktop UI and no-console tests
+        run: python tests/test_gui.py
+
+      - name: Web interface tests
+        run: python tests/test_web.py
+
+      - name: Fuzz the parser (500 inputs)
+        run: python tests/test_fuzz.py 500 --seed 424242
+
+  executable:
+    # The packaged build is only meaningful on Windows.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install openpyxl pyinstaller
+
+      - name: Build the executable
+        run: python build_exe.py --onefile
+
+      - name: Verify the executable matches the source behaviour
+        run: python tests/test_exe.py
+
+      - name: Upload the executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: adif2xlsx-windows
+          path: dist/adif2xlsx.exe

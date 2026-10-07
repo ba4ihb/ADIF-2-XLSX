@@ -1,0 +1,33 @@
+﻿# Lint configuration for ruff (https://docs.astral.sh/ruff/).
+#
+# Only rules that catch real defects are enabled as errors, so `ruff check`
+# stays a meaningful gate rather than a style argument.  Run it with:
+#
+#     pip install ruff
+#     ruff check .
+#
+# The test harness under tests/adversarial/ is a separate tool with its own
+# conventions; it is excluded here and audited on its own terms.
+
+target-version = "py310"
+line-length = 100
+extend-exclude = ["tests/adversarial", "build", "dist"]
+
+[lint]
+# E9  syntax/IO errors      F  pyflakes (unused, undefined, duplicates)
+# B   bugbear (real bugs)   UP  pyupgrade kept to the safe subset below
+select = ["E9", "F", "B", "W6", "PLE", "PLW"]
+ignore = [
+    # The explicit `check=False` is used where the return code IS the signal.
+    "PLW1510",
+]
+
+[lint.per-file-ignores]
+# Test scripts intentionally import after manipulating sys.path, and use a
+# module-level counter that check() bumps.
+"tests/*.py" = ["E402", "PLW0603"]
+"build_exe.py" = ["F401"]   # PyInstaller import is an availability probe
+
+[lint.pyflakes]
+# The `# noqa: E402` markers in tests are meaningful; do not strip them.
+extend-generics = []

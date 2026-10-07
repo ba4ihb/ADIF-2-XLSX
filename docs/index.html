@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADIF 2 XLSX — 把业余无线电日志变成干净的 Excel</title>
+<meta name="description" content="ADIF (.adi/.adif) 转 Excel 转换器：保留原始数据、自动识别字段、附 DXCC 实体与 QSL 平信邮资。Windows 桌面版与网页版功能完全一致。">
+<link rel="icon" href="icon.png">
+<style>
+  :root{
+    --pink:#FF7EA8; --pink-deep:#F2558B; --cream:#FFFBF7; --blush:#FFE4EC;
+    --mint:#DFF6EE; --lav:#EDE7FF; --sun:#FFF3C4; --ink:#4A3B45;
+    --ink-soft:#7A6B75; --line:#F2DDE5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",
+      "Hiragino Sans GB",sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:40px 22px 80px}
+  header{text-align:center;padding:26px 0 34px}
+  h1{
+    font-size:2.35rem;margin:0 0 10px;letter-spacing:-.5px;
+    background:linear-gradient(96deg,var(--pink-deep),#A98BFF 55%,#54C6A8);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .tag{color:var(--ink-soft);font-size:1.02rem;margin:0 auto;max-width:640px}
+  .credit{
+    margin:20px auto 0;max-width:640px;padding:13px 18px;
+    background:#fff;border:1.5px dashed var(--pink);border-radius:16px;
+    font-size:.92rem;color:var(--ink-soft);
+  }
+  .credit b{color:var(--pink-deep)}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:24px 0 6px}
+  .badges img{height:22px}
+  .card{
+    background:#fff;border:1.5px solid var(--line);border-radius:20px;
+    padding:24px 26px;margin:18px 0;
+    box-shadow:0 6px 22px rgba(255,126,168,.07);
+  }
+  .card.mint{background:linear-gradient(180deg,var(--mint),#fff 70%)}
+  .card.blush{background:linear-gradient(180deg,var(--blush),#fff 70%)}
+  .card.lav{background:linear-gradient(180deg,var(--lav),#fff 70%)}
+  .card.sun{background:linear-gradient(180deg,var(--sun),#fff 70%)}
+  h2{font-size:1.24rem;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  h3{font-size:1.02rem;margin:20px 0 8px;color:var(--ink)}
+  p{margin:9px 0}
+  ul,ol{margin:9px 0;padding-left:22px}
+  li{margin:5px 0}
+  code{
+    background:#FDF1F5;border:1px solid var(--line);border-radius:6px;
+    padding:1px 6px;font-size:.89em;
+    font-family:ui-monospace,Consolas,"Cascadia Mono",monospace;
+  }
+  pre{
+    background:#3A2F36;color:#FCEFF4;border-radius:14px;padding:15px 17px;
+    overflow:auto;font-size:.86rem;line-height:1.55;
+  }
+  pre code{background:none;border:0;padding:0;color:inherit}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    background:linear-gradient(180deg,#FF9DBE,var(--pink-deep));
+    color:#fff;text-decoration:none;font-weight:600;
+    padding:13px 24px;border-radius:999px;margin:7px 9px 7px 0;
+    box-shadow:0 6px 16px rgba(242,85,139,.28);
+    transition:transform .14s ease,box-shadow .14s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(242,85,139,.34)}
+  .btn.ghost{
+    background:#fff;color:var(--pink-deep);border:1.7px solid var(--pink);
+    box-shadow:none;
+  }
+  .btn.ghost:hover{background:var(--blush)}
+  .cta{text-align:center;margin:8px 0 4px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+  th{background:var(--blush);font-weight:600}
+  .note{font-size:.88rem;color:var(--ink-soft)}
+  footer{text-align:center;color:var(--ink-soft);font-size:.88rem;margin-top:46px}
+  a{color:var(--pink-deep)}
+  .step{display:flex;gap:12px;align-items:flex-start;margin:12px 0}
+  .num{
+    flex:0 0 26px;height:26px;border-radius:50%;
+    background:var(--pink);color:#fff;font-size:.85rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;margin-top:2px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>ADIF → Excel ✨</h1>
+  <p class="tag">
+    把 LoTW / QRZ / Club Log / N1MM / JTDX / TQSL 导出的日志，整理成一张干净的表格。
+    保留原始数据、自动识别字段、附上 DXCC 实体与 QSL 平信邮资。所有时间为 UTC。
+  </p>
+  <div class="credit">
+    <b>本项目的全部代码与文档由 DeepSeek Harness + DeepSeek-V4.1-Flash Max 编写。</b><br>
+    This project was written by <b>DeepSeek Harness + DeepSeek-V4.1-Flash Max</b>.
+  </div>
+  <div class="badges">
+    <img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License">
+    <img src="https://img.shields.io/badge/python-94.8%25-3776AB?logo=python&logoColor=white" alt="Python 94.8%">
+    <img src="https://img.shields.io/badge/html-4.9%25-E34F26?logo=html5&logoColor=white" alt="HTML 4.9%">
+    <img src="https://img.shields.io/badge/batch-0.3%25-4D4D4D" alt="Batch 0.3%">
+    <img src="https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white" alt="Windows">
+    <img src="https://img.shields.io/badge/DXCC-ARRL%202026-FF7EA8" alt="ARRL DXCC 2026">
+  </div>
+</header>
+
+<div class="card sun">
+  <h2>⚠️ 先读这一段：网页版怎么运行</h2>
+  <p>
+    <b>这个网页不能单独工作。</b>它需要你电脑上运行一个本机小程序来读取 ADI 文件和生成 Excel —
+    因为浏览器无法直接写你磁盘上的文件，也不该把你的日志上传到任何服务器。
+  </p>
+  <p>
+    所以「网页版」= 你双击一个程序 → 它只监听 <code>127.0.0.1</code>（只有本机能访问）→
+    浏览器打开这个界面 → <b>所有转换都在你自己电脑上完成，日志不出本机</b>。
+  </p>
+  <p class="note">
+    为什么不做成纯网页（比如 Pyodide 在浏览器里跑 Python）？那会让页面加载几百 MB，
+    而且需要把转换逻辑用 JavaScript 重写一遍 —— 两份实现必然会不一致。
+    本项目选择让三种界面共用同一份 Python 代码，代价是网页版要跑一个本机服务。
+  </p>
+</div>
+
+<div class="card blush">
+  <h2>⬇️ 下载</h2>
+  <div class="cta">
+    <a class="btn" href="https://github.com/OWNER/REPO/releases/latest">
+      ↓ 下载最新版（解压即用 ZIP）
+    </a>
+    <a class="btn ghost" href="https://github.com/OWNER/REPO">
+      查看源码
+    </a>
+  </div>
+  <p class="note" style="text-align:center">
+    <code>adif2xlsx-web.zip</code> = 网页版　·　
+    <code>adif2xlsx-ui.zip</code> = 桌面窗口版　·　
+    <code>adif2xlsx-cli.zip</code> = 命令行版
+  </p>
+</div>
+
+<div class="card">
+  <h2>🚀 网页版：三步开始</h2>
+  <div class="step"><div class="num">1</div><div>
+    下载 <code>adif2xlsx-web.zip</code>，解压到任意文件夹（建议英文路径）。
+  </div></div>
+  <div class="step"><div class="num">2</div><div>
+    双击文件夹里的 <code>启动网页版.bat</code>。会弹出一个黑色窗口 ——
+    <b>转换期间请不要关掉它</b>，浏览器会自动打开。
+  </div></div>
+  <div class="step"><div class="num">3</div><div>
+    把 <code>.adi</code> / <code>.adif</code> 文件拖进页面，选好要输出的列，点「开始转换」。
+    Excel 会直接下载到浏览器的下载目录。
+  </div></div>
+  <p class="note">
+    如果浏览器没自动打开，手动访问黑窗口里显示的地址（形如
+    <code>http://127.0.0.1:8000/?token=…</code>）。那串 token 是本次运行随机生成的，
+    用来确保只有你能访问。
+  </p>
+</div>
+
+<div class="card mint">
+  <h2>🖥️ 不想跑服务？用桌面版</h2>
+  <p>
+    下载 <code>adif2xlsx-ui.zip</code>，解压后双击 <code>adif2xlsx-ui.exe</code>，
+    直接出来一个窗口，拖文件进去转换即可。<b>功能和网页版完全一致</b> ——
+    同一份转换代码，同一套列选项。
+  </p>
+  <p>
+    需要批量处理或写脚本？用 <code>adif2xlsx-cli.zip</code>：
+  </p>
+  <pre><code>adif2xlsx.exe log1.adi log2.adi -o 汇总.xlsx
+adif2xlsx.exe 日志文件夹 -o 汇总.xlsx --columns required
+adif2xlsx.exe --list-fields</code></pre>
+</div>
+
+<div class="card lav">
+  <h2>📋 输出的两张表</h2>
+  <table>
+    <tr><th>工作表</th><th>内容</th></tr>
+    <tr>
+      <td><code>QSOs</code></td>
+      <td>每条通联一行。第 1 行是英文列名（大写，公式和脚本用），
+          第 2 行是中文标签（人看）。日期和时间是<b>真正的 Excel 日期时间值</b>，
+          不是文本。</td>
+    </tr>
+    <tr>
+      <td><code>Summary</code></td>
+      <td>波段 / 模式 / 呼号统计、总览、来源文件，以及<b>逐列填充情况</b>。
+          第 1 行就写明数据来源和「单元格为空」的含义。</td>
+    </tr>
+  </table>
+
+  <h3>必选列（永远输出）</h3>
+  <p><code>CALL</code> <code>QSO_DATE</code> <code>TIME_ON_UTC</code>
+     <code>TIME_OFF_UTC</code> <code>FREQ_MHZ</code> <code>BAND</code>
+     <code>MODE</code> <code>SUBMODE</code> <code>RST_SENT</code>
+     <code>RST_RCVD</code> <code>STATION_CALLSIGN</code> <code>SOURCE_FILE</code></p>
+  <p class="note">
+    <b>所有时间都是 UTC，不做时区换算</b>，并在列名里写明 <code>_UTC</code>。
+    你的日志里写的什么时间，导出的就是什么时间。
+  </p>
+
+  <h3>附加列：不硬编码字段名</h3>
+  <p>
+    除了上述必选列，工具会<b>扫描 ADI 里实际出现的所有 ADIF 字段</b>并各自成列。
+    某个字段如果在所有记录中都是空的，就不输出该列 —— 所以不同日志导出的列不完全一样，
+    这是刻意的。
+  </p>
+  <p class="note">
+    可以按需筛选：「常用」「全部」「仅必选」，或者展开后逐列勾选。
+  </p>
+</div>
+
+<div class="card">
+  <h2>🌍 DXCC 实体 ≠ 国家</h2>
+  <p>
+    「国家」和「DXCC 实体」不是一回事：中国 = 大陆 + 香港 + 澳门 + 台湾 + 黄岩岛；
+    俄罗斯 = 欧洲部分 / 亚洲部分 / 加里宁格勒；美国 = 本土 / 夏威夷 / 阿拉斯加 / 波多黎各。
+  </p>
+  <p>
+    本工具的 DXCC 表<b>由 ARRL 官方 DXCC 列表生成</b>
+    （2026 年 1 月版，340 个现有实体 + 62 个已删除实体）。
+    判定顺序是：日志自带的 <code>DXCC</code> 编号 → 日志自带的 <code>COUNTRY</code> → 呼号前缀。
+  </p>
+  <p class="note">
+    这一点很重要：LoTW、Club Log、N1MM 都会写 <code>DXCC</code> 编号，而编号是权威的。
+    早期版本用了手写的编号表，导致 <code>SP4DDS</code>（波兰，269）被判成多哥 ——
+    国家错，邮资也错。现在表是生成的，并有 260 个区块的自动化审计。
+  </p>
+</div>
+
+<div class="card blush">
+  <h2>✉️ QSL 邮资（中国邮政 平信）</h2>
+  <p>
+    按 <b>20 克平信</b>计，输出到 <code>QSL_POSTAGE_AIR</code> 列。
+    大陆地区显示单一数字 <code>1.20</code>；港澳台 航空 2.00 / 水陆路 1.50；
+    国际分区 1–4 档。不提供邮政服务的地区写「不通邮」。
+  </p>
+  <p class="note">
+    资费会变。所以 Summary 表里同时写明<b>资费标准的生效日期和核对日期</b>，
+    以及来源 —— 一个过期的价格比没有价格更糟。挂号费等附加费用不计入。
+  </p>
+</div>
+
+<div class="card mint">
+  <h2>🔒 隐私</h2>
+  <ul>
+    <li>转换<b>完全在本机</b>完成，不上传任何数据，不联网。</li>
+    <li>网页版服务只监听 <code>127.0.0.1</code>，其他机器访问不到。</li>
+    <li>每次运行随机生成访问 token，防止本机其他程序误用。</li>
+    <li>上传的临时文件在转换后立即删除，输出由浏览器下载。</li>
+    <li>仓库里的测试日志是<b>合成的假呼号</b>，与真实通联记录零重叠（已用脚本核对）。</li>
+  </ul>
+</div>
+
+<footer>
+  <p>
+    MIT License ·
+    <a href="https://github.com/OWNER/REPO">源码</a> ·
+    <a href="https://github.com/OWNER/REPO/issues">问题反馈</a>
+  </p>
+  <p>由 DeepSeek Harness + DeepSeek-V4.1-Flash Max 编写</p>
+</footer>
+
+</div>
+</body>
+</html>
