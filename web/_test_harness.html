@@ -21,6 +21,10 @@ function log(m) { LOG.push(m); out.textContent = LOG.join("\n"); }
 function finish(pass, why) {
   verdict.textContent = (pass ? "HARNESS PASS" : "HARNESS FAIL") + "  " + why;
   verdict.style.background = pass ? "#d8f5e3" : "#ffd9dd";
+  // A marker the test can wait for: --dump-dom snapshots the document when its
+  // virtual-time budget expires, which can be before an async conversion ends,
+  // and then the verdict still reads "running" and looks like a failure.
+  document.body.dataset.done = pass ? "pass" : "fail";
   log("VERDICT: " + (pass ? "PASS" : "FAIL") + "  " + why);
 }
 
