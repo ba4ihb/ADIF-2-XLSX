@@ -189,7 +189,7 @@ def test_browser_and_service_agree(with_browser: bool):
         os.remove(staged)
         return
     if not with_browser:
-        print("  SKIP  live check not requested (pass --with-browser)")
+        print("  SKIP  live check disabled (--no-browser)")
         os.remove(staged)
         return
 
@@ -222,7 +222,7 @@ def test_browser_and_service_agree(with_browser: bool):
         # captured; the numbers are reported through it, so read the page text
         # via a second, text-only run.
         verdict = _harness_verdict(edge, port, profile, shot)
-        print(f"  harness verdict: {verdict}")
+        print(f"  harness verdict: {verdict[:120]}")
         check("HARNESS PASS" in verdict, "the browser converted a log",
               verdict[:200])
     finally:
@@ -293,16 +293,22 @@ def _wait_for_port(port: int, timeout: float = 20.0) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    # The live check runs by DEFAULT.  It was opt-in at first, and the test
+    # runner does not pass flags, so the strongest assertion in this suite was
+    # silently skipped in every normal run -- the check that matters most was the
+    # one not running.
     parser.add_argument("--with-browser", action="store_true",
-                        help="also drive a headless browser (needs network for "
-                             "the Pyodide CDN)")
+                        help="(default) drive a headless browser; needs network "
+                             "for the Pyodide CDN")
+    parser.add_argument("--no-browser", action="store_true",
+                        help="static checks only, for an offline machine")
     args = parser.parse_args()
     print("=== browser edition ===")
     test_packed_sources_are_current()
     test_no_service_call()
     test_ui_parity_with_local_edition()
     test_docs_copy_matches()
-    test_browser_and_service_agree(args.with_browser)
+    test_browser_and_service_agree(not args.no_browser)
     print(f"\nchecks: {CHECKS}   failures: {FAILURES}")
     return 1 if FAILURES else 0
 

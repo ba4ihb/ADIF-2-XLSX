@@ -17,7 +17,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#环境要求)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#下载)
 [![DXCC](https://img.shields.io/badge/DXCC-ARRL%202026%20edition-FF7EA8)](src/dxcc_tables.py)
-[![Tests](https://img.shields.io/badge/tests-9%20suites%20%C2%B7%20555%20checks-54C6A8)](#自己验证这个工具)
+[![Tests](https://img.shields.io/badge/tests-6%20suites%20%C2%B7%20449%20checks-54C6A8)](#自己验证这个工具)
 
 ---
 
@@ -475,7 +475,12 @@ python tests/run_all_tests.py --with-gui --with-web
 | `test_exe.py` | 一致性 | 打包版与源码产出**逐单元格完全相同** |
 | `test_fuzz.py` | 2000 输入 | 任何输入都不打印异常堆栈、不产生损坏的工作簿 |
 
-当前状态：**9/9 套件通过（含打包版一致性与浏览器版实跑），`ruff check` 无告警**，浏览器版、本机服务版、桌面版、命令行四者输出一致。
+当前状态：**默认 6/9 套件、449 项检查全部通过（`python tests/run_all_tests.py`），`ruff check` 无告警**。
+
+- 默认跑的 6 个套件含 **浏览器版实跑**（无头浏览器里真转一次）；
+- 桌面界面、网页服务、打包 exe 需要图形环境或已构建的 exe，因此分别用
+  `--with-gui`、`--with-web`、`--with-exe` 打开，`--all` 一次全跑；
+- 九个套件合计 555 项检查，四者（浏览器 / 本机服务 / 桌面 / 命令行）输出一致。
 
 ---
 
@@ -1045,7 +1050,7 @@ later adjustment was found. Verify at a counter or on 11183 before relying on a
 figure, and update `src/postage.py` — the constants and the comment block at the
 top of that file show exactly what to change.
 
-`tests/test_postage.py` asserts the published tariffs (45 checks); the
+`tests/test_postage.py` asserts the published tariffs (56 checks); the
 end-to-end suite additionally re-derives every price in the workbook from the
 postal tables and fails if a cell disagrees.
 
@@ -1120,7 +1125,7 @@ names, whitespace-padded values, a repeated field name, a zero-length value,
 `APP_LOTW_*` fields, `FREQ` without `BAND`, `BAND` without `FREQ`, and trailing
 non-ADIF text.
 
-The acceptance suite (219 checks) covers, among others:
+The acceptance suite (240 checks) covers, among others:
 
 * every required column exists and is populated for every row;
 * `QSO_DATE` / `TIME_ON_UTC` are real Excel date and time values carrying the
@@ -1250,7 +1255,7 @@ adif2xlsx/
 │  ├─ test_postage.py         54 unit checks on the tariffs
 │  ├─ test_acceptance.py      201 end-to-end checks on the converter
 │  ├─ test_gui.py             37 checks on the UI and the no-console paths
-│  ├─ test_web.py             65 checks on the web API
+│  ├─ test_web.py             69 checks on the web API
 │  ├─ test_fuzz.py            fuzzes the parser
 │  ├─ test_exe.py             checks the built .exe matches the source
 │  ├─ run_all_tests.py        runs every suite and summarises
