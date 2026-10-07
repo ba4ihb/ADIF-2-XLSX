@@ -253,6 +253,40 @@ for _prefix, _entity in PREFIX_ONLY_ENTITIES.items():
     PREFIX_LOOKUP[_prefix] = _entity.code
 
 
+#: prefix -> the other entity codes the published list gives it.  56 prefixes
+#: have more than one owner: the ARRL list writes "CE0" against Easter I., Juan
+#: Fernandez Is. and San Felix & San Ambrosio without saying which call area
+#: belongs to which, and "TO" against seven French territories.
+SHARED_PREFIXES: Dict[str, List[str]] = {
+    prefix: list(codes)
+    for prefix, codes in getattr(_tables, "SHARED_PREFIXES", {}).items()
+}
+
+
+def _prefix_source(prefix: str, code: str) -> str:
+    """Describe a prefix resolution, naming the alternatives when there are any.
+
+    A lookup can only return one entity, so for a shared prefix one owner is
+    chosen -- but reporting that as a plain "PREFIX" hides the fact that the
+    published list does not decide it.  Naming the other candidates in
+    DXCC_SOURCE means a rare-island contact says "this could also be X" instead
+    of quietly asserting the wrong answer.
+    """
+    others = [other for other in SHARED_PREFIXES.get(prefix, ())
+              if other != code]
+    if not others:
+        return "PREFIX"
+    names = []
+    for other in others[:4]:
+        entity = _entity_for(other)
+        if entity is not None and entity.name not in names:
+            names.append(entity.name)
+    if not names:
+        return "PREFIX"
+    more = "" if len(names) == len(others) else f" +{len(others) - len(names)}"
+    return f"PREFIX ({prefix} shared with {', '.join(names)}{more})"
+
+
 def _entity_for(code: str) -> Optional[DxccEntity]:
     """Look up an entity by DXCC number or by a prefix-only key."""
     entity = ENTITIES.get(code)
@@ -476,7 +510,7 @@ def lookup_number(
         if code:
             entity = _entity_for(code)
             if entity is not None:
-                return entity.code, entity.name, "PREFIX"
+                return entity.code, entity.name, _prefix_source(prefix, code)
 
     # 4. A genuine ITU "1x1" allocation (a single letter plus a single digit),
     #    used only when no longer prefix matched: K1ABC, W1AW, G3ABC.

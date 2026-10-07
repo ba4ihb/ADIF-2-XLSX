@@ -48,7 +48,8 @@ ADIF 2 XLSX —— {title}
 --------------------------------------------------------------
   {exe}          主程序
 {extra_files}
-  README.md              完整说明
+  README.md              完整说明（简体中文）
+  README.en.md           Full documentation (English)
   LICENSE                MIT 开源协议
 
 所有时间均为 UTC，不做时区换算。
@@ -182,9 +183,12 @@ def build_package(variant: str, version: str, onedir: bool) -> str:
                 print("     included 启动网页版.bat")
 
         zf.write(os.path.join(ROOT, "LICENSE"), "LICENSE")
-        readme = os.path.join(ROOT, "README.md")
-        if os.path.isfile(readme):
-            zf.write(readme, "README.md")
+        # Both language versions travel with the package: the ZIP is often the
+        # only copy a user has, and the two files link to each other.
+        for readme in ("README.md", "README.en.md"):
+            path = os.path.join(ROOT, readme)
+            if os.path.isfile(path):
+                zf.write(path, readme)
         zf.writestr("QUICKSTART.txt",
                     QUICKSTART.format(title=title,
                                       underline="=" * (len(title) + 20),
@@ -220,7 +224,10 @@ def build_all_in_one(version: str) -> str:
             print("     SKIP: nothing to package")
             return ""
         zf.write(os.path.join(ROOT, "LICENSE"), "LICENSE")
-        zf.write(os.path.join(ROOT, "README.md"), "README.md")
+        for readme in ("README.md", "README.en.md"):
+            path = os.path.join(ROOT, readme)
+            if os.path.isfile(path):
+                zf.write(path, readme)
         zf.writestr("QUICKSTART.txt", """\
 ADIF 2 XLSX —— 全部版本
 ======================

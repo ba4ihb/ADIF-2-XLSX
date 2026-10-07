@@ -9,13 +9,13 @@
     },
     {
       "name": "dxcc.py",
-      "bytes": 21789,
-      "sha256": "0a7a35d733011d30f55324ded4b5ab2f444ae6073a3f63d55165602f9700f9df"
+      "bytes": 23251,
+      "sha256": "a124e3eff6bc2945baa90c2ceeb5fde18e7b2b78933ff6f375d4d81ab43d2686"
     },
     {
       "name": "dxcc_tables.py",
-      "bytes": 26135,
-      "sha256": "0093e7bfdfed9f0540aacfc8d125ad10c6d11104d5bf6ad1705489256dcac8a6"
+      "bytes": 28087,
+      "sha256": "96fd9b6551ee939a0629c32f7e8871c36c3f4a431a94dc4e06e6b25619c360f6"
     },
     {
       "name": "postage.py",
@@ -41,7 +41,7 @@
   ],
   "pysrc": {
     "file": "adif2xlsx-pysrc.zip",
-    "bytes": 56147,
-    "sha256": "7bc0a2a42691b9511557bd8d4758ecddceedee29df5bc44a29f6bd8b8997b9b0"
+    "bytes": 57280,
+    "sha256": "0d43523bacbd236656966523bbd280be905f9e857a5fafe571afa7dcb3762be1"
   }
 }

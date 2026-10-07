@@ -451,6 +451,17 @@ def main() -> int:
 
     prefix_to_code, bare_allocations = build_prefix_map(current)
 
+    #: Prefixes the list hands to more than one entity.  The mapping must pick
+    #: one owner (a lookup cannot return several), so record the others here and
+    #: let the resolver say so instead of pretending the answer is certain.
+    shared_codes: dict = {}
+    for row in current:
+        for token in raw_prefix_tokens(row["prefix"]):
+            shared_codes.setdefault(token, set()).add(row["code"])
+    shared_prefixes = {prefix: sorted(codes)
+                       for prefix, codes in shared_codes.items()
+                       if len(codes) > 1}
+
     # Names that share a code with another name are separate DXCC entities.
     extra_names = []
     seen_codes = set()
@@ -467,7 +478,8 @@ def main() -> int:
 
     deleted = parse_deleted(DELETED)
     print(f"prefixes: {len(prefix_to_code)}   extra names: {len(extra_names)}"
-          f"   deleted: {len(deleted)}")
+          f"   deleted: {len(deleted)}"
+          f"   shared prefixes: {len(shared_prefixes)}")
 
     for code, want in (("269", "Poland"), ("501", "Bosnia-Herzegovina"),
                        ("386", "Taiwan"), ("318", "China"),
@@ -511,6 +523,19 @@ def main() -> int:
                      f'"{row["continent"]}", '
                      f'{raw_prefix_tokens(row["prefix"])!r}),\n')
         fh.write("]\n\n")
+
+        fh.write("#: prefix -> every entity code the published list gives it.\n"
+                 "#: Only prefixes with more than one owner appear.  The list\n"
+                 "#: does not say which call area belongs to which entity --\n"
+                 "#: \"CE0\" is Easter I., Juan Fernandez Is. and San Felix &\n"
+                 "#: San Ambrosio, \"TO\" covers seven French territories -- so a\n"
+                 "#: prefix lookup has to choose one.  These entries let the\n"
+                 "#: resolver name the alternatives rather than hide them.\n")
+        fh.write("SHARED_PREFIXES: dict = {\n")
+        for prefix in sorted(shared_prefixes):
+            codes = ", ".join(f'"{code}"' for code in shared_prefixes[prefix])
+            fh.write(f'    "{prefix}": [{codes}],\n')
+        fh.write("}\n\n")
 
         fh.write("#: deleted entity code -> name\nDELETED: dict = {\n")
         for code in sorted(deleted, key=int):
