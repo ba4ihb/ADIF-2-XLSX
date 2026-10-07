@@ -7,7 +7,7 @@ executable, the licence, the README and a short QUICKSTART, and every package is
 verified by running the program it ships before the ZIP is written -- a release
 that cannot start is worse than no release.
 
-Usage:  python tools/make_release.py [--version v1.0.0]
+Usage:  python tools/make_release.py [--version v1.1.0]
 Writes to release/.
 """
 
@@ -17,6 +17,7 @@ import argparse
 import hashlib
 import io
 import os
+import re
 import subprocess
 import sys
 import zipfile
@@ -125,6 +126,21 @@ def verify_executable(path: str, marker: str = "ADIF") -> bool:
     print(f"     --help printed {len(text)} chars, "
           f"marker {marker!r} {'found' if ok else 'MISSING'}")
     return ok
+
+
+def read_core_version() -> str:
+    """The version, read from the core so there is only one place to change it.
+
+    The release name and every ZIP filename derive from this.  A second copy
+    here is how a release ends up labelled with a version its own binary
+    disagrees with -- which is exactly what had happened.
+    """
+    path = os.path.join(ROOT, "src", "adif2xlsx.py")
+    with open(path, encoding="utf-8") as fh:
+        match = re.search(r'^__version__\s*=\s*"([^"]+)"', fh.read(), re.M)
+    if not match:
+        raise SystemExit("cannot find __version__ in src/adif2xlsx.py")
+    return "v" + match.group(1)
 
 
 def build_package(variant: str, version: str, onedir: bool) -> str:
@@ -258,7 +274,8 @@ ADIF 2 XLSX —— 全部版本
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build the release ZIPs")
-    parser.add_argument("--version", default="v1.0.0")
+    parser.add_argument("--version", default=read_core_version(),
+                        help="release tag (default: the core's own version)")
     args = parser.parse_args()
 
     if not os.path.isdir(DIST):

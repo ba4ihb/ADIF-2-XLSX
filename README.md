@@ -6,6 +6,9 @@
 
 [![tests](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml/badge.svg)](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-84%2E8%25-3776AB?logo=python&logoColor=white)](#语言的构成)
+[![HTML](https://img.shields.io/badge/HTML-15%2E0%25-E34F26?logo=html5&logoColor=white)](#语言的构成)
+[![Batchfile](https://img.shields.io/badge/Batchfile-0%2E2%25-4D4D4D)](#语言的构成)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#环境要求)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#下载)
 [![DXCC](https://img.shields.io/badge/DXCC-ARRL%202026-FF7EA8)](src/dxcc_tables.py)
@@ -37,6 +40,7 @@
 - [环境要求](#环境要求)
 - [命令行用法](#命令行用法)
 - [架构说明](#架构说明)
+- [语言的构成](#语言的构成)
 - [项目结构](#项目结构)
 - [自己验证这个工具](#自己验证这个工具)
 - [已知限制](#已知限制)
@@ -83,7 +87,7 @@
 | `adif2xlsx-ui.zip` | 桌面窗口版 | `adif2xlsx-ui.exe` |
 | `adif2xlsx-cli.zip` | 命令行版 | 终端里调用 `adif2xlsx.exe` |
 | `adif2xlsx-all.zip` | 以上全部六种构建 | 自己挑 |
-| `*-onedir-v1.0.0.zip` | 文件夹版 | **启动明显更快，日常建议选它** |
+| `*-onedir-*.zip` | 文件夹版 | **启动明显更快，日常建议选它** |
 | `SHA256SUMS.txt` | 校验和 | `certutil -hashfile <文件> SHA256` |
 
 > **单文件版启动慢**：首次启动要解压到临时目录，约 8–60 秒（取决于磁盘和内存）。
@@ -453,6 +457,28 @@ adif2xlsx.exe [输入...] [-o 输出.xlsx] [选项]
 
 > 为什么不用 JavaScript 重写一遍？因为**两份实现必然逐渐不一致**，
 > 而这正是本项目要避免的。
+
+---
+
+## 语言的构成
+
+按仓库中**非空代码行**统计，由 `tools/lang_stats.py` 生成；
+不计生成物（`src/dxcc_tables.py`）、第三方数据和构建产物：
+
+| 语言 | 行数 | 占比 |
+|------|-----:|-----:|
+| Python | 14 104 | **84.8 %** |
+| HTML（单文件前端 + 浏览器版页面） | 2 488 | **15.0 %** |
+| Batchfile（启动脚本） | 32 | **0.2 %** |
+| **合计** | **16 624** | 100 % |
+
+另有 Markdown、TOML 等文档与配置，不计入代码占比。
+
+Python 占绝对多数是刻意的：**转换、DXCC、邮资、四种界面全部是同一份 Python 代码**。
+HTML 那 15 % 是界面外壳——**它自己不解析 ADIF**，浏览器版更是直接在页面里跑那份
+Python（见 [架构说明](#架构说明)）。所以不存在"两份实现不一致"的问题。
+
+重新统计：`python tools/lang_stats.py`
 
 ---
 

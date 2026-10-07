@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -57,10 +58,22 @@ ENTRY = os.path.join(SRC, "adif2xlsx.py")
 BUILD = os.path.join(HERE, "build")
 DIST = os.path.join(HERE, "dist")
 
-VERSION_INFO = """VSVersionInfo(
+#: The version lives in one place -- core.__version__ -- so a release cannot
+#: ship a binary whose version block disagrees with what `--version` prints.
+def _version_tuple() -> tuple:
+    text = open(os.path.join(SRC, "adif2xlsx.py"),
+                encoding="utf-8").read()
+    match = re.search(r'^__version__\s*=\s*"([^"]+)"', text, re.M)
+    if not match:
+        raise SystemExit("cannot find __version__ in src/adif2xlsx.py")
+    parts = (match.group(1).split(".") + ["0", "0", "0"])[:4]
+    return tuple(int(p) if p.isdigit() else 0 for p in parts)
+
+
+VERSION_INFO_TEMPLATE = """VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 0),
-    prodvers=(1, 0, 0, 0),
+    filevers={version_tuple},
+    prodvers={version_tuple},
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -74,16 +87,24 @@ VERSION_INFO = """VSVersionInfo(
         '040904B0',
         [StringStruct('CompanyName', 'adif2xlsx'),
          StringStruct('FileDescription', 'ADIF to Excel converter'),
-         StringStruct('FileVersion', '1.0.0.0'),
+         StringStruct('FileVersion', '{version_dotted}'),
          StringStruct('InternalName', 'adif2xlsx'),
          StringStruct('OriginalFilename', 'adif2xlsx.exe'),
          StringStruct('ProductName', 'adif2xlsx'),
-         StringStruct('ProductVersion', '1.0.0.0')])
+         StringStruct('ProductVersion', '{version_dotted}')])
     ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]
 )
 """
+
+
+def version_info() -> str:
+    """The PyInstaller version resource, built from the core's version."""
+    parts = _version_tuple()
+    return VERSION_INFO_TEMPLATE.format(
+        version_tuple="(" + ", ".join(str(p) for p in parts) + ")",
+        version_dotted=".".join(str(p) for p in parts))
 
 
 def build(mode: str, *, variant: str = "cli") -> int:
@@ -196,8 +217,10 @@ def main() -> int:
                 print(f"removed {os.path.relpath(folder, HERE)}")
 
     os.makedirs(BUILD, exist_ok=True)
+    resource = version_info()
     with open(os.path.join(BUILD, "version_info.txt"), "w", encoding="utf-8") as fh:
-        fh.write(VERSION_INFO)
+        fh.write(resource)
+    print(f"version resource: {'.'.join(str(p) for p in _version_tuple())}")
 
     modes = (["onefile"] if args.onefile else
              ["onedir"] if args.onedir else ["onefile", "onedir"])

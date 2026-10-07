@@ -6,6 +6,9 @@
 
 [![tests](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml/badge.svg)](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-84%2E8%25-3776AB?logo=python&logoColor=white)](#language-composition)
+[![HTML](https://img.shields.io/badge/HTML-15%2E0%25-E34F26?logo=html5&logoColor=white)](#language-composition)
+[![Batchfile](https://img.shields.io/badge/Batchfile-0%2E2%25-4D4D4D)](#language-composition)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#requirements)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#download)
 [![DXCC](https://img.shields.io/badge/DXCC-ARRL%202026-FF7EA8)](src/dxcc_tables.py)
@@ -38,6 +41,7 @@
 - [Requirements](#requirements)
 - [Command line](#command-line)
 - [Architecture](#architecture)
+- [Language composition](#language-composition)
 - [Project layout](#project-layout)
 - [Verify it yourself](#verify-it-yourself)
 - [Known limitations](#known-limitations)
@@ -87,7 +91,7 @@ Every ZIP is **unpack and run** — no Python needed, nothing to install.
 | `adif2xlsx-ui.zip` | Desktop window | `adif2xlsx-ui.exe` |
 | `adif2xlsx-cli.zip` | Command line | run `adif2xlsx.exe` in a terminal |
 | `adif2xlsx-all.zip` | All six builds | your choice |
-| `*-onedir-v1.0.0.zip` | Folder build | **starts much faster — recommended for daily use** |
+| `*-onedir-*.zip` | Folder build | **starts much faster — recommended for daily use** |
 | `SHA256SUMS.txt` | Checksums | `certutil -hashfile <file> SHA256` |
 
 > **The single-file build starts slowly**: it unpacks itself to a temp folder on every
@@ -485,6 +489,32 @@ The important points:
 
 > Why not rewrite it in JavaScript? Because **two implementations inevitably drift
 > apart**, and avoiding exactly that is the point of this project.
+
+---
+
+## Language composition
+
+Measured by `tools/lang_stats.py` over the repository's **non-blank code lines**,
+excluding generated files (`src/dxcc_tables.py`), third-party data and build
+output:
+
+| Language | Lines | Share |
+|----------|------:|------:|
+| Python | 14,104 | **84.8 %** |
+| HTML (single-file front ends, including the browser edition page) | 2,488 | **15.0 %** |
+| Batchfile (launcher) | 32 | **0.2 %** |
+| **Total** | **16,624** | 100 % |
+
+Documentation and configuration (Markdown, TOML) are reported separately and kept
+out of the code mix.
+
+Python dominating is deliberate: **the conversion, the DXCC table, the postage and
+all four front ends are one body of Python.** The 15 % of HTML is interface shell
+— **it does not parse ADIF** — and the browser edition runs that same Python
+directly in the page (see [Architecture](#architecture)). There is therefore no
+second implementation to drift.
+
+Re-measure with `python tools/lang_stats.py`.
 
 ---
 
