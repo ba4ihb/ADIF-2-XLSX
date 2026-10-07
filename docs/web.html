@@ -1,0 +1,965 @@
+<!--
+  ADIF 2 XLSX -- browser edition (generated; do not edit by hand).
+
+  Generated from web/index.html by tools/build_browser_page.py.
+
+  This page runs the real converter -- src/adif2xlsx.py, dxcc.py, dxcc_tables.py
+  and postage.py -- inside the browser via Pyodide (CPython in WebAssembly), so
+  there is exactly one implementation of the conversion logic in this project.
+  It talks to no server: your log never leaves the machine.
+
+  Differences from the local-service edition, and nothing else:
+    1. bootstrap: Pyodide + a virtual filesystem instead of /api/* calls;
+    2. the save field is a download file NAME (a page cannot write to an
+       arbitrary path, by design);
+    3. no upload, no token, no local service.
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADIF 转 Excel ✨（浏览器版，打开即用）</title>
+<link rel="icon" href="icon.png">
+<style>
+  :root {
+    --cream: #FFFBF7;
+    --card: #FFFFFF;
+    --blush: #FFE4EC;
+    --blush-deep: #FFC9DA;
+    --pink: #FF7EA8;
+    --pink-dark: #F06694;
+    --lavender: #EFE6FF;
+    --mint: #DFF6EE;
+    --mint-text: #2F8F6F;
+    --ink: #46404B;
+    --ink-soft: #8C8494;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Microsoft YaHei UI", "PingFang SC", "Hiragino Sans GB",
+                 system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .page { max-width: 720px; margin: 0 auto; padding: 34px 20px 60px; }
+
+  header h1 {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    font-size: 34px; font-weight: 700; margin: 0; letter-spacing: -0.5px;
+  }
+  header h1 .arrow { color: var(--pink); }
+  header p { margin: 6px 0 22px; color: var(--ink-soft); font-size: 13px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--blush-deep);
+    border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+  }
+  .card.lavender { border-color: var(--lavender); }
+  .card h2 {
+    font-size: 14px; margin: 0 0 12px; display: flex;
+    align-items: center; gap: 8px; font-weight: 700;
+  }
+  .card h2 .count {
+    margin-left: auto; font-weight: 400; font-size: 12px; color: var(--ink-soft);
+  }
+
+  /* 拖放区 */
+  .drop {
+    border: 2px dashed var(--blush-deep); border-radius: 14px;
+    background: #FFF8FB; padding: 26px 16px; text-align: center;
+    color: var(--ink-soft); cursor: pointer; transition: .15s;
+  }
+  .drop:hover, .drop.over { background: var(--blush); border-color: var(--pink); }
+  .drop strong { color: var(--ink); font-size: 15px; }
+  .drop .hint { font-size: 12px; margin-top: 4px; }
+
+  /* 文件列表 */
+  ul.files { list-style: none; margin: 12px 0 0; padding: 0; }
+  ul.files li {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: #FFF8FB; border-radius: 10px; margin-bottom: 6px;
+    font-size: 13px;
+  }
+  ul.files li .name { flex: 1; overflow: hidden; text-overflow: ellipsis;
+                      white-space: nowrap; }
+  ul.files li .recs { color: var(--ink-soft); font-size: 12px; }
+  ul.files li .err { color: #D6455B; font-size: 12px; }
+  ul.files li button {
+    border: 0; background: transparent; color: var(--ink-soft);
+    cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 4px;
+  }
+  ul.files li button:hover { color: var(--pink-dark); }
+
+  /* 按钮 */
+  button.btn {
+    border: 0; border-radius: 999px; padding: 9px 18px; font-size: 13px;
+    font-family: inherit; cursor: pointer; background: var(--blush);
+    color: var(--ink); transition: .15s;
+  }
+  button.btn:hover { background: var(--blush-deep); }
+  button.btn.primary {
+    background: var(--pink); color: #fff; font-size: 15px; font-weight: 700;
+    padding: 14px 40px; display: block; width: 100%; margin-top: 4px;
+  }
+  button.btn.primary:hover { background: var(--pink-dark); }
+  button.btn.primary:disabled { background: #E8E4EC; color: #B3AEB8;
+                                cursor: default; }
+  button.btn.ghost { background: var(--lavender); }
+  button.btn.ghost:hover { background: #E2D6FA; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* 输入 */
+  input[type=text] {
+    width: 100%; padding: 9px 12px; font-size: 13px; font-family: inherit;
+    border: 1px solid var(--blush-deep); border-radius: 10px;
+    background: #FFF8FB; color: var(--ink);
+  }
+  input[type=text]:focus { outline: 2px solid var(--blush-deep); }
+  label.check { display: flex; align-items: center; gap: 7px; font-size: 13px;
+                cursor: pointer; }
+  label.check input { accent-color: var(--pink); width: 15px; height: 15px; }
+
+  /* 选择列 */
+  .fields { height: 300px; overflow-y: auto; padding-right: 6px;
+            margin-top: 10px; }
+  .fields h3 { font-size: 12px; color: var(--pink-dark); margin: 12px 0 6px;
+               position: sticky; top: 0; background: var(--card);
+               padding: 4px 0; }
+  .fields h3.plain { color: var(--ink); }
+  .field {
+    display: flex; align-items: baseline; gap: 8px; padding: 3px 2px;
+    font-size: 13px;
+  }
+  .field.locked { color: var(--ink); }
+  .field input { accent-color: var(--pink); width: 15px; height: 15px;
+                 flex: none; }
+  .field .tick { color: var(--pink); font-weight: 700; width: 15px;
+                 text-align: center; flex: none; }
+  .field .code { margin-left: auto; color: var(--ink-soft); font-size: 11px;
+                 font-family: "Segoe UI", system-ui, sans-serif; }
+
+  .info {
+    background: var(--mint); color: var(--mint-text); border-radius: 12px;
+    padding: 11px 14px; font-size: 12.5px; margin-top: 4px;
+  }
+
+  /* 结果 */
+  #result { display: none; }
+  #result.show { display: block; }
+  .stat { display: flex; gap: 22px; margin: 4px 0 12px; flex-wrap: wrap; }
+  .stat div { font-size: 12px; color: var(--ink-soft); }
+  .stat strong { display: block; font-size: 20px; color: var(--ink);
+                 font-family: "Segoe UI", system-ui, sans-serif; }
+  .tag { display: inline-block; background: var(--mint); color: var(--mint-text);
+         border-radius: 8px; padding: 2px 8px; font-size: 11.5px;
+         margin: 2px 4px 2px 0; }
+  .warn { background: #FFF6E5; border-color: #FFE0A3; }
+  .warn h2 { color: #9A6B00; }
+
+  #toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 10px 20px;
+    border-radius: 999px; font-size: 13px; opacity: 0; pointer-events: none;
+    transition: .25s; max-width: 90vw;
+  }
+  #toast.show { opacity: .95; }
+  .busy { opacity: .55; pointer-events: none; }
+
+  /* browser-edition styling: the runtime notice bar */
+  #boot {
+    background: var(--lavender); border-radius: 12px; padding: 12px 14px;
+    font-size: 12.5px; margin-bottom: 16px;
+  }
+  #boot b { color: var(--pink-dark); }
+  #boot .bar {
+    height: 6px; background: #fff; border-radius: 999px; overflow: hidden;
+    margin-top: 8px;
+  }
+  #boot .bar i {
+    display: block; height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--pink), #A98BFF);
+    transition: width .3s;
+  }
+  #boot.ok { background: var(--mint); color: var(--mint-text); }
+  #boot.bad { background: #FFE9EC; color: #B03050; }
+  .only-browser { display: none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>ADIF <span class="arrow">→</span> Excel ✨</h1>
+    <p>把业余无线电日志整理成一张干净的表格 · 所有时间为 UTC，不做时区换算</p>
+  </header>
+
+  <div id="boot">
+    <span id="bootText">正在准备浏览器版运行时…</span>
+    <div class="bar"><i></i></div>
+  </div>
+
+  <!-- 1. 日志文件 -->
+  <section class="card">
+    <h2>📻 日志文件 <span class="count" id="fileCount">还没有文件</span></h2>
+    <div class="drop" id="drop">
+      <strong>拖放 ADIF 文件到这里</strong>
+      <div class="hint">或者点击选择文件（可多选）</div>
+    </div>
+    <input type="file" id="picker" multiple accept=".adi,.adif" hidden>
+    <input type="file" id="folderPicker" webkitdirectory hidden>
+    <ul class="files" id="fileList"></ul>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="addFolder">🗂 选择文件夹</button>
+      <button class="btn" id="clearFiles">清空</button>
+      <button class="btn ghost" id="readFiles" disabled>读取字段</button>
+    </div>
+  </section>
+
+  <!-- 2. 要输出的列 -->
+  <section class="card lavender">
+    <h2>📋 要输出的列 <span class="count" id="columnCount"></span></h2>
+    <div class="row">
+      <button class="btn" data-preset="common">常用</button>
+      <button class="btn" data-preset="all">全部</button>
+      <button class="btn" data-preset="required">仅必选</button>
+      <button class="btn ghost" id="toggleAll" style="margin-left:auto">
+        展开全部附加列</button>
+    </div>
+    <div class="fields" id="fields"></div>
+  </section>
+
+  <!-- 3. 下载文件名（浏览器版：不能写你磁盘上的任意路径） -->
+  <section class="card lavender">
+    <h2>💾 下载文件名 <span class="count">保存到浏览器的下载目录</span></h2>
+    <input type="text" id="downloadName" spellcheck="false" value="adif_export.xlsx">
+    <div class="info" id="infoLine"></div>
+  </section>
+
+  <!-- 4. 选项 + 开始 -->
+  <section class="card">
+    <div class="row" style="margin-bottom:14px">
+      <label class="check"><input type="checkbox" id="openAfter" checked>
+        完成后提示保存位置</label>
+      <label class="check"><input type="checkbox" id="subfolders" checked>
+        文件夹包含子目录</label>
+      <span class="count" style="margin-left:auto">🔒 不过网络，不上传</span>
+    </div>
+    <button class="btn primary" id="start" disabled>开始转换 ✨</button>
+  </section>
+
+  <!-- 结果 -->
+  <section class="card" id="result">
+    <h2>🎉 转换完成</h2>
+    <div class="stat">
+      <div><strong id="rTotal">0</strong>条记录</div>
+      <div><strong id="rCols">0</strong>输出列</div>
+      <div><strong id="rFiles">0</strong>来源文件</div>
+    </div>
+    <div id="rWhere"></div>
+    <div id="rColumns" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card warn" id="warnBox" style="display:none">
+    <h2>⚠️ 需要注意</h2>
+    <div id="warnBody"></div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+let CATALOGUE = { required: [], optional: [], mandatory: [], presets: {} };
+let ENV = {};
+let files = [];              // {file, name, records, error}
+let available = null;        // 读取后得到的可用字段
+let chosen = null;           // null = 全部有数据的列
+
+const $ = (id) => document.getElementById(id);
+
+function toast(msg, ms = 2600) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("show"), ms);
+}
+
+function busy(on) {
+  document.querySelectorAll("button, input").forEach(el => {
+    if (on) { el.dataset.wasDisabled = el.disabled; el.disabled = true; }
+    else if (el.dataset.wasDisabled === "false") { el.disabled = false; }
+  });
+  document.body.classList.toggle("busy", on);
+}
+
+/* ---------- 初始化 ---------- */
+/* No service to connect to: bootPython() fills CATALOGUE and ENV from the
+   Python catalogue, then calls renderFields(). */
+
+/* ---------- 文件 ---------- */
+function addFiles(list) {
+  const seen = new Set(files.map(f => f.name + ":" + f.file.size));
+  for (const file of list) {
+    const key = file.name + ":" + file.size;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    files.push({ file, name: file.name, records: null, error: "" });
+  }
+  available = null;
+  renderFiles();
+}
+
+function renderFiles() {
+  const ul = $("fileList");
+  ul.innerHTML = "";
+  files.forEach((item, i) => {
+    const li = document.createElement("li");
+    const icon = "📄";
+    let extra = "";
+    if (item.error) extra = `<span class="err">${escapeHtml(item.error)}</span>`;
+    else if (item.records !== null)
+      extra = `<span class="recs">${item.records} 条</span>`;
+    li.innerHTML =
+      `<span>${icon}</span><span class="name">${escapeHtml(item.name)}</span>` +
+      extra + `<button title="移除">✕</button>`;
+    li.querySelector("button").onclick = () => {
+      files.splice(i, 1);
+      available = null;
+      renderFiles();
+    };
+    ul.appendChild(li);
+  });
+  $("fileCount").textContent = files.length ? `共 ${files.length} 项` : "还没有文件";
+  $("readFiles").disabled = files.length === 0;
+  $("start").disabled = files.length === 0;
+}
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
+/* ---------- 选择列 ---------- */
+function renderFields() {
+  const box = $("fields");
+  box.innerHTML = "";
+  const lockedNames = new Set(CATALOGUE.required);
+
+  const required = document.createElement("h3");
+  required.textContent = `必选列（共 ${CATALOGUE.required.length} 列，始终输出）`;
+  box.appendChild(required);
+  CATALOGUE.required.forEach(f => {
+    const row = document.createElement("div");
+    row.className = "field locked";
+    row.innerHTML = `<span class="tick">✓</span>` +
+      `<span>${escapeHtml(f.label)}</span>` +
+      `<span class="code">${escapeHtml(f.name)}</span>`;
+    row.title = f.hint;
+    box.appendChild(row);
+  });
+
+  const optional = CATALOGUE.optional;
+  const head = document.createElement("h3");
+  head.className = "plain";
+  head.textContent = "附加列（勾选后输出；不勾选时只输出有数据的）";
+  box.appendChild(head);
+
+  optional.forEach(f => {
+    const row = document.createElement("label");
+    row.className = "field";
+    row.title = f.hint;
+    const box_ = document.createElement("input");
+    box_.type = "checkbox";
+    box_.dataset.name = f.name;
+    box_.checked = available ? available.includes(f.name)
+                             : CATALOGUE.presets.common.includes(f.name);
+    box_.onchange = updateColumnCount;
+    row.appendChild(box_);
+    const label = document.createElement("span");
+    label.textContent = f.label;
+    row.appendChild(label);
+    const code = document.createElement("span");
+    code.className = "code";
+    code.textContent = f.name + (f.derived ? " · 自动" : "");
+    row.appendChild(code);
+    box.appendChild(row);
+  });
+  updateColumnCount();
+}
+
+function boxes() {
+  return Array.from(document.querySelectorAll('#fields input[type=checkbox]'));
+}
+
+function updateColumnCount() {
+  const on = boxes().filter(b => b.checked).length + CATALOGUE.required.length;
+  const total = CATALOGUE.required.length + CATALOGUE.optional.length;
+  $("columnCount").textContent = `将输出 ${on} 列（可选 ${total - CATALOGUE.required.length} 项）`;
+}
+
+function applyPreset(kind) {
+  const on = new Set();
+  if (kind === "all") {
+    boxes().forEach(b => { b.checked = true; });
+  } else if (kind === "required") {
+    boxes().forEach(b => { b.checked = false; });
+  } else {
+    const preset = new Set(CATALOGUE.presets.common);
+    boxes().forEach(b => { b.checked = preset.has(b.dataset.name); });
+  }
+  updateColumnCount();
+}
+
+function selectedColumns() {
+  const on = boxes().filter(b => b.checked).map(b => b.dataset.name);
+  if (on.length === 0) return [];             // 仅必选
+  const all = CATALOGUE.optional.length;
+  if (on.length === all) return null;         // 全部：交给后端按“有数据”决定
+  return on;
+}
+
+/* ---------- 读取与转换：直接调用本页里的 Python ---------- */
+
+async function readFields() {
+  if (!files.length) return;
+  if (!window.__ready) { toast("运行时还在准备，请稍候", 4000); return; }
+  busy(true);
+  try {
+    const data = await pyPreview({ files: await filePayload() });
+    if (!data.ok) { toast(data.error || "读取失败", 5000); return; }
+    data.files.forEach((got, i) => {
+      if (files[i] && files[i].name === got.name) {
+        files[i].records = got.records;
+        files[i].error = got.error;
+      }
+    });
+    available = data.available;
+    renderFiles();
+    renderFields();
+    toast(`读取到 ${data.available.length} 个可用字段`);
+  } catch (err) {
+    toast("读取失败：" + err.message, 5000);
+  } finally {
+    busy(false);
+  }
+}
+
+async function convert() {
+  if (!files.length) return;
+  if (!window.__ready) { toast("运行时还在准备，请稍候", 4000); return; }
+  busy(true);
+  $("result").classList.remove("show");
+  $("warnBox").style.display = "none";
+  try {
+    const data = await pyConvert({
+      files: await filePayload(),
+      columns: selectedColumns(),
+    });
+    if (!data.ok) {
+      toast(data.error || "转换失败", 6000);
+      if (data.trace) console.error(data.trace);
+      return;
+    }
+    const name = ($("downloadName").value.trim() || "adif_export.xlsx");
+    downloadBlob(new Blob([data.bytes], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    }), name);
+    showResult(data.report);
+    window.__lastReport = data.report;   // test hook: lets a harness verify
+  } catch (err) {
+    toast("转换失败：" + err.message, 6000);
+  } finally {
+    busy(false);
+  }
+}
+
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+function showResult(report) {
+  $("rTotal").textContent = report.total || 0;
+  $("rCols").textContent = report.columns || 0;
+  $("rFiles").textContent = Object.keys(report.sources || {}).length;
+  $("rWhere").innerHTML = report.saved_to
+    ? `已保存到：<code>${escapeHtml(report.saved_to)}</code>`
+    : "已开始下载：<code>adif_export.xlsx</code>";
+  const names = report.column_names || [];
+  $("rColumns").innerHTML = names.length
+    ? names.map(n => `<span class="tag">${escapeHtml(n)}</span>`).join("")
+    : "";
+  $("result").classList.add("show");
+
+  const notes = [];
+  if (report.skipped && report.skipped.length)
+    notes.push("跳过 " + report.skipped.length + " 个文件：" + report.skipped.join("；"));
+  if (report.incomplete)
+    notes.push(`${report.incomplete} 条记录有字段为空（源文件本身没有导出该字段），Summary 表已逐列说明`);
+  if (report.entity_unknown)
+    notes.push(`${report.entity_unknown} 条记录未能判定 DXCC 实体（该呼号前缀有歧义或不在表中）`);
+  const tags = Object.keys(report.unknown_tags || {});
+  if (tags.length)
+    notes.push("忽略了不认识的标记：" + tags.slice(0, 8).join("、"));
+  if (notes.length) {
+    $("warnBody").innerHTML = notes.map(n => `<p style="margin:6px 0">${escapeHtml(n)}</p>`).join("");
+    $("warnBox").style.display = "block";
+  }
+  if ($("openAfter").checked && report.saved_to) {
+    toast("已保存到 " + report.saved_to, 5000);
+  }
+}
+
+/* The zip writer of the local edition is not needed here: this page
+   hands the Python code the files directly. */
+
+/* ---------- 事件绑定 ---------- */
+const drop = $("drop");
+drop.onclick = () => $("picker").click();
+$("picker").onchange = (e) => { addFiles(e.target.files); e.target.value = ""; };
+$("folderPicker").onchange = (e) => { addFiles(e.target.files); e.target.value = ""; };
+$("addFolder").onclick = () => $("folderPicker").click();
+$("clearFiles").onclick = () => { files = []; available = null;
+                                  renderFiles(); renderFields(); };
+$("readFiles").onclick = readFields;
+$("start").onclick = convert;
+
+["dragenter", "dragover"].forEach(ev => {
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault(); drop.classList.add("over");
+  });
+});
+["dragleave", "drop"].forEach(ev => {
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault(); drop.classList.remove("over");
+  });
+});
+drop.addEventListener("drop", (e) => {
+  if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+});
+
+document.querySelectorAll("[data-preset]").forEach(btn => {
+  btn.onclick = () => applyPreset(btn.dataset.preset);
+});
+
+/* The download name needs no mode switch: the browser always downloads. */
+$("downloadName").addEventListener("change", () => {
+  let name = $("downloadName").value.trim() || "adif_export.xlsx";
+  if (!/\.xlsx$/i.test(name)) name += ".xlsx";
+  $("downloadName").value = name;
+});
+
+// The column list is tall; let it be opened and collapsed so the page stays
+// scannable instead of being one long wall of checkboxes.
+$("toggleAll").onclick = () => {
+  const box = $("fields");
+  const open = box.style.height === "auto";
+  box.style.height = open ? "300px" : "auto";
+  $("toggleAll").textContent = open ? "展开全部附加列" : "收起";
+};
+
+/* bootPython() is defined below and starts the runtime. */
+
+/* ---------- 浏览器版引导：把真正的 Python 转换器跑在本页里 ---------- */
+/* The page calls these three functions instead of /api/*. Everything else on
+   this page is byte-for-byte the local-service edition. */
+const PYODIDE_VERSION = "v0.28.0";
+const PYODIDE_CDN =
+  `https://cdn.jsdelivr.net/pyodide/${PYODIDE_VERSION}/full/`;
+
+function boot(message, ratio, state) {
+  const bar = document.querySelector("#boot .bar i");
+  document.getElementById("bootText").innerHTML = message;
+  if (bar) bar.style.width = Math.round((ratio || 0) * 100) + "%";
+  const box = document.getElementById("boot");
+  box.classList.remove("ok", "bad");
+  if (state) box.classList.add(state);
+}
+
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+function bytesToB64(bytes) {
+  let out = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    out += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  }
+  return btoa(out);
+}
+
+/* Unzip with the platform's own decompressor -- no third-party code. */
+async function inflateRaw(bytes) {
+  const stream = new Blob([bytes]).stream()
+    .pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function unpackSources(pyodide, zipBytes) {
+  const view = new DataView(zipBytes.buffer, zipBytes.byteOffset,
+                            zipBytes.byteLength);
+  let at = 0;
+  const files = [];
+  while (at + 30 <= zipBytes.length && view.getUint32(at, true) === 0x04034b50) {
+    const method = view.getUint16(at + 8, true);
+    const size = view.getUint32(at + 18, true);
+    const nameLen = view.getUint16(at + 26, true);
+    const extraLen = view.getUint16(at + 28, true);
+    const name = new TextDecoder().decode(
+      zipBytes.subarray(at + 30, at + 30 + nameLen));
+    const start = at + 30 + nameLen + extraLen;
+    const raw = zipBytes.subarray(start, start + size);
+    const content = method === 8 ? await inflateRaw(raw) : raw;
+    files.push(["/app/" + name, content]);
+    at = start + size;
+  }
+  for (const [path, content] of files) pyodide.FS.writeFile(path, content);
+  return files.map(f => f[0]);
+}
+
+let PY = null;                      // the running Python namespace
+let BOOT_ERROR = "";
+
+/* The page may be opened straight from disk (file://), where a cross-origin
+   <script> will not load.  Those two URLs answer without CORS headers, so the
+   fetch() route works where the tag does not. */
+async function loadScript(url) {
+  if (location.protocol !== "file:") {
+    const tag = document.createElement("script");
+    tag.src = url;
+    const viaTag = new Promise((ok, bad) => {
+      tag.onload = ok;
+      tag.onerror = () => bad(new Error("script tag failed"));
+    });
+    document.head.appendChild(tag);
+    try { await viaTag; return; } catch (_) { /* fall through to fetch */ }
+  }
+  const source = await (await fetch(url, { mode: "cors" })).text();
+  const inline = document.createElement("script");
+  inline.textContent = source;
+  document.head.appendChild(inline);
+  if (typeof loadPyodide !== "function") {
+    throw new Error("Pyodide 加载失败");
+  }
+}
+
+async function bootPython() {
+  boot("正在准备浏览器版运行时…（<b>首次约 10 MB</b>，之后走缓存）", 0.05);
+  await loadScript(PYODIDE_CDN + "pyodide.js");
+
+  boot("正在启动 Python 运行时…", 0.25);
+  const pyodide = await loadPyodide({ indexURL: PYODIDE_CDN });
+
+  boot("正在下载 openpyxl（首次约 260 KB）…", 0.5);
+  const wheels = [
+    "dist/openpyxl-3.1.5-py3-none-any.whl",
+    "dist/et_xmlfile-2.0.0-py3-none-any.whl",
+  ];
+  await pyodide.loadPackage(
+    wheels.map(w => new URL(w, location.href).href));
+
+  boot("正在载入转换器（同一份 Python 代码）…", 0.75);
+  const zip = new Uint8Array(await (await fetch(
+    new URL("dist/adif2xlsx-pysrc.zip", location.href))).arrayBuffer());
+  pyodide.FS.mkdirTree("/app");
+  pyodide.FS.chdir("/app");
+  const names = await unpackSources(pyodide, zip);
+
+  pyodide.runPython(`__import__("sys").path.insert(0, "/app")`);
+  pyodide.runPython(`
+import base64, io, json, os, sys, traceback
+
+sys.path.insert(0, "/app")
+
+
+def _sel(payload):
+    """Turn the page's column selection into the argument core expects.
+
+    \`\`null\`\` means "every column that holds data", \`\`[]\`\` means "the mandatory
+    set only", a list means those columns.  Same contract as --columns.
+    """
+    columns = payload.get("columns")
+    if columns is None:
+        return None
+    return list(columns)
+
+
+def convert(payload):
+    """Convert uploaded files and return a JSON-able report.
+
+    \`\`payload\`\` is \`\`{"files": [{"name":..., "data": <b64>}], "columns": ...}\`\`.
+    Returns \`\`{"ok": True, "xlsx": <b64>, "report": {...}}\`\` or \`\`{"ok": False,
+    "error": ...}\`\`.  Nothing touches the network: this runs in the page.
+    """
+    try:
+        import adif2xlsx as core
+    except Exception as exc:                      # noqa: BLE001
+        return {"ok": False, "error": f"加载转换模块失败：{exc}"}
+
+    if not hasattr(core, "parse_adif_bytes"):
+        # A stale copy of the module is loaded.  Say so precisely: this is the
+        # one failure mode that looks like a conversion bug but is a build
+        # problem, and the file path identifies it immediately.
+        return {"ok": False, "error":
+                f"载入的 adif2xlsx 是旧版本（file={getattr(core, '__file__', '?')}，"
+                f"version={getattr(core, '__version__', '?')}）—— 请重新构建 "
+                f"web/dist/adif2xlsx-pysrc.zip"}
+
+    parsed, skipped, unknown_tags = [], [], {}
+    for item in payload.get("files") or []:
+        name = item.get("name") or "upload.adi"
+        try:
+            raw = base64.b64decode(item.get("data") or "")
+        except Exception as exc:                  # noqa: BLE001
+            skipped.append(f"{name}：无法解码（{exc}）")
+            continue
+        try:
+            result = core.parse_adif_bytes(raw, label=name)
+        except Exception as exc:                  # noqa: BLE001
+            skipped.append(f"{name}：{exc}")
+            continue
+        parsed.append((name, result.records, result.header, result.unknown_tags))
+        for tag in result.unknown_tags:
+            unknown_tags[tag] = unknown_tags.get(tag, 0) + 1
+
+    if not parsed:
+        return {"ok": False, "saved_to": "",
+                "error": "没有可转换的记录\\n" + "\\n".join(skipped[:5])}
+
+    try:
+        payload_bytes, result = core.workbook_bytes(parsed, _sel(payload))
+    except Exception as exc:                      # noqa: BLE001
+        return {"ok": False, "error": str(exc),
+                "trace": traceback.format_exc()[-1200:]}
+
+    report = {
+        "total": result.total_records,
+        "columns": len(result.columns),
+        "column_names": list(result.columns),
+        "sources": dict(result.sources),
+        "skipped": skipped,
+        "unknown_tags": unknown_tags,
+        "saved_to": "",
+        "incomplete": len(result.incomplete),
+        "entity_unknown": getattr(result, "entity_unknown", 0),
+    }
+    return {"ok": True, "xlsx": base64.b64encode(payload_bytes).decode("ascii"),
+            "report": report}
+
+
+def preview(payload):
+    """Report each file's record count and the fields the data can produce.
+
+    The same two things the local service returns, computed by the same module.
+    """
+    try:
+        import adif2xlsx as core
+    except Exception as exc:                      # noqa: BLE001
+        return {"ok": False, "error": f"加载转换模块失败：{exc}"}
+    files, available = [], []
+    for item in payload.get("files") or []:
+        name = item.get("name") or "upload.adi"
+        entry = {"name": name, "records": 0, "error": ""}
+        try:
+            raw = base64.b64decode(item.get("data") or "")
+            parsed = core.parse_adif_bytes(raw, label=name)
+            entry["records"] = len(parsed.records)
+            merged = [(name, parsed.records, parsed.header, parsed.unknown_tags)]
+            result = core.build_rows(merged, None)
+            available = list(result.available) or available
+        except Exception as exc:                  # noqa: BLE001
+            entry["error"] = str(exc)
+        files.append(entry)
+    return {"ok": True, "files": files, "available": available}
+
+
+def catalogue():
+    """The column catalogue, taken from the core so labels cannot disagree."""
+    import adif2xlsx as core
+    required = list(core.REQUIRED_COLUMNS)
+    optional = [n for n in core.FIELD_LABELS_ZH if n not in required]
+    optional += [n for n in (core.ENTITY_SOURCE_COLUMN,
+                             core.POSTAGE_DETAIL_COLUMN)
+                 if n not in required and n not in optional]
+    mandatory = list(core.MANDATORY_COLUMNS)
+    return {
+        "required": [{"name": n, "label": core.field_label(n),
+                      "hint": core.describe_field(n)} for n in required],
+        "optional": [{"name": n, "label": core.field_label(n),
+                      "hint": core.describe_field(n),
+                      "derived": n in core.DERIVED_COLUMNS,
+                      "always": n in mandatory}
+                     for n in sorted(optional)],
+        "mandatory": mandatory,
+        "presets": {
+            "common": ["CALL", "QSO_DATE", "TIME_ON_UTC", "BAND", "MODE",
+                       "RST_SENT", "RST_RCVD", "STATION_CALLSIGN",
+                       "DXCC_ENTITY", "QSL_POSTAGE_AIR"],
+            "all": None,
+            "required": [],
+        },
+        "download_name": core.DEFAULT_OUTPUT_NAME,
+        "version": core.__version__,
+        "weight_g": __import__("postage").REFERENCE_WEIGHT_G,
+        "rates_verified": __import__("postage").RATES_VERIFIED_ON,
+    }
+`);
+  /* The bridge always exchanges JSON *text*.  Pyodide auto-converts a returned
+     dict into a JsProxy -- and JSON.parse() on that is a confusing crash -- so
+     the Python side is asked for a string and the page parses it itself.
+     The argument is passed as base64 inside a Python literal, which avoids
+     quoting problems with the quotes and newlines in ADIF payloads, and a
+     no-argument call stays a no-argument call. */
+  const bridge = (name) => (arg) => {
+    let call;
+    if (arg === undefined || arg === null) {
+      call = `${name}()`;
+    } else {
+      /* A string argument is already JSON; anything else is serialised here.
+         Double-encoding a string is how "str object has no attribute get"
+         happens: the payload arrives as a string instead of a dict. */
+      const json = typeof arg === "string" ? arg : JSON.stringify(arg);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      call = `${name}(_j.loads(__import__("base64").b64decode("${b64}")` +
+             `.decode("utf-8")))`;
+    }
+    return pyodide.runPython(
+      `import json as _j; _j.dumps(${call}, ensure_ascii=False)`);
+  };
+  window.__pyCatalogue = bridge("catalogue");
+  window.__pyConvert = bridge("convert");
+  window.__pyPreview = bridge("preview");
+  PY = window.__pyConvert;
+
+  const catalogue = JSON.parse(window.__pyCatalogue());
+  ENV = catalogue;
+  CATALOGUE = {
+    required: catalogue.required, optional: catalogue.optional,
+    mandatory: catalogue.mandatory, presets: catalogue.presets,
+  };
+  document.getElementById("downloadName").value = catalogue.download_name;
+  document.getElementById("infoLine").textContent =
+    `自动附上 DXCC 实体与 QSL 平信邮资（${catalogue.weight_g} 克，` +
+    `资费核对于 ${catalogue.rates_verified}）；` +
+    `某列全空通常是导出软件没有提供该字段，Summary 表会逐列说明`;
+  renderFields();
+  boot("✅ 浏览器版已就绪 —— <b>全部在本页完成，日志不会离开这台电脑</b>",
+       1, "ok");
+  document.querySelectorAll(".only-browser").forEach(
+    el => { el.style.display = el.dataset.display || "block"; });
+  window.__ready = true;
+  console.log("adif2xlsx browser edition ready; python modules:", ["adif2xlsx.py","dxcc.py","dxcc_tables.py","postage.py"]);
+}
+
+/* The three calls the page makes, mirroring the local service API.  Each one
+   hands JSON text to Python and gets JSON text back, so nothing depends on how
+   Pyodide chooses to convert a value. */
+async function pyConvert(payload) {
+  const out = JSON.parse(PY(JSON.stringify(payload)));
+  if (out.ok) out.bytes = b64ToBytes(out.xlsx);
+  return out;
+}
+
+async function pyPreview(payload) {
+  return JSON.parse(window.__pyPreview(JSON.stringify(payload)));
+}
+
+function filePayload() {
+  return Promise.all(files.map(async item => ({
+    name: item.name,
+    data: bytesToB64(new Uint8Array(await item.file.arrayBuffer())),
+  })));
+}
+
+/* ---------- 测试钩子 ----------
+   Only active when the page is embedded (a harness drives it).  It reports the
+   real outcome of a real conversion so the test asserts the RESULT rather than
+   looking for a visual cue that a screenshot may or may not catch. */
+if (window.parent && window.parent !== window) {
+  window.addEventListener("message", async (event) => {
+    if (!event.data || event.data.cmd !== "run-test") return;
+    const say = (m) => window.parent.postMessage(
+      { from: "adif2xlsx", log: m }, "*");
+    try {
+      say(`ready=${!!window.__ready} ` +
+          `required=${CATALOGUE.required.length} ` +
+          `optional=${CATALOGUE.optional.length}`);
+      if (!window.__ready) { window.parent.postMessage(
+        { from: "adif2xlsx", done: false, why: "runtime not ready" }, "*"); return; }
+
+      const file = new File([event.data.adi], event.data.name || "sample.adi",
+                            { type: "text/plain" });
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const picker = $("picker");
+      picker.files = dt.files;
+      picker.dispatchEvent(new Event("change"));
+      say("file added: " + files.map(f => f.name).join(","));
+
+      // Capture the download instead of writing it to disk.
+      let blob = null;
+      const realCreate = URL.createObjectURL.bind(URL);
+      URL.createObjectURL = (b) => { blob = b; return realCreate(b); };
+      const realClick = HTMLAnchorElement.prototype.click;
+      let savedAs = "";
+      HTMLAnchorElement.prototype.click = function () {
+        savedAs = this.download;
+      };
+
+      const started = performance.now();
+      await convert();
+      HTMLAnchorElement.prototype.click = realClick;
+
+      const report = window.__lastReport || {};
+      let magic = "";
+      if (blob) {
+        const head = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+        magic = Array.from(head)
+          .map(b => b.toString(16).padStart(2, "0")).join(" ");
+      }
+      say(`converted in ${((performance.now() - started) / 1000).toFixed(1)}s: ` +
+          `total=${report.total} columns=${report.columns}`);
+      window.parent.postMessage({
+        from: "adif2xlsx", done: true,
+        total: report.total, columns: report.columns,
+        column_names: report.column_names || [],
+        saved_as: savedAs, bytes: blob ? blob.size : 0, magic: magic,
+        required: CATALOGUE.required.map(r => r.name),
+      }, "*");
+    } catch (err) {
+      window.parent.postMessage(
+        { from: "adif2xlsx", done: false, why: String(err && err.message || err) },
+        "*");
+    }
+  });
+  window.parent.postMessage({ from: "adif2xlsx", greeting: true }, "*");
+}
+
+bootPython().catch(err => {
+  BOOT_ERROR = String(err && err.message || err);
+  boot(`❌ 浏览器版无法启动：${BOOT_ERROR}<br>` +
+       `请改用<a href="https://github.com/ba4ihb/ADIF-2-XLSX/releases/latest">` +
+       `桌面版或命令行版</a>（功能相同）。`, 0, "bad");
+});
+
+</script>
+</body>
+</html>

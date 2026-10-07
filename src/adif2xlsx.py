@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import importlib.util
+import io
 import math
 import os
 import re
@@ -611,14 +612,12 @@ _FIELD_START_RE = re.compile(r"<\s*([A-Za-z_][A-Za-z0-9_\-\.]*)\s*(?::\s*(\d+)\s
 _END_TAG_RE = re.compile(r"<\s*/?\s*(EOR|EOH|EOD)\s*/?\s*>", re.IGNORECASE)
 
 
-def _read_text(path: str) -> str:
-    """Read an ADIF file, tolerating BOMs and unknown encodings.
+def _decode_adif(raw: bytes) -> str:
+    """Decode ADIF bytes, tolerating BOMs and unknown encodings.
 
     ADIF is defined as ASCII/UTF-8.  Some Windows loggers emit CP1252 or a
     UTF-16 BOM; those are handled rather than crashing.
     """
-    with open(path, "rb") as fh:
-        raw = fh.read()
     if not raw:
         return ""
     if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
@@ -629,6 +628,12 @@ def _read_text(path: str) -> str:
         except UnicodeDecodeError:
             continue
     return raw.decode("utf-8", errors="replace")
+
+
+def _read_text(path: str) -> str:
+    """Read an ADIF file from disk."""
+    with open(path, "rb") as fh:
+        return _decode_adif(fh.read())
 
 
 # A tag whose content is not a legal ADIF field name cannot open a field.
@@ -786,9 +791,23 @@ def parse_adif(path: str) -> ParseResult:
     Raises AdifParseError when the file holds no recognisable ADIF records, so a
     stray non-ADIF file is reported instead of silently producing a bogus row.
     """
-    text = _read_text(path)
+    return parse_adif_bytes(_read_text(path).encode("utf-8"), label=path)
+
+
+def parse_adif_bytes(raw: bytes, label: str = "upload.adi") -> ParseResult:
+    """Parse ADIF content that is already in memory.
+
+    ``label`` names the source in messages and in the SOURCE_FILE column, which
+    is why it is passed in rather than derived: the browser has no path, only the
+    file name the user chose.
+    """
+    return parse_adif_text(_decode_adif(raw), label=label)
+
+
+def parse_adif_text(text: str, label: str = "upload.adi") -> ParseResult:
+    """Parse ADIF text.  The one place the record loop lives."""
     if "<" not in text:
-        raise AdifParseError(f"{path}: no ADIF fields found")
+        raise AdifParseError(f"{label}: no ADIF fields found")
 
     header: Dict[str, str] = {}
     records: List[Dict[str, str]] = []
@@ -816,7 +835,7 @@ def parse_adif(path: str) -> ParseResult:
 
     if not records:
         raise AdifParseError(
-            f"{path}: no ADIF QSO records found (is this really an ADIF file?)"
+            f"{label}: no ADIF QSO records found (is this really an ADIF file?)"
         )
     return ParseResult(records, header, unknown)
 
@@ -1580,6 +1599,21 @@ def convert_to_workbook(
     selected_columns: Optional[Iterable[str]] = None,
 ) -> ConversionResult:
     """Build the workbook from parsed ADIF data and save it."""
+    workbook, result = build_workbook(parsed, selected_columns)
+    _save_workbook(workbook, out_path)
+    return result
+
+
+def build_workbook(
+    parsed: Sequence[Tuple[str, List[Dict[str, str]], Dict[str, str], List[str]]],
+    selected_columns: Optional[Iterable[str]] = None,
+):
+    """Build the workbook in memory and return ``(workbook, result)``.
+
+    Split out of :func:`convert_to_workbook` so a caller that cannot write a file
+    -- the browser edition, which runs this very module under Pyodide -- gets the
+    same workbook without a second implementation.
+    """
     result = build_rows(parsed, selected_columns)
 
     if result.total_records == 0:
@@ -1594,8 +1628,22 @@ def convert_to_workbook(
     workbook.remove(workbook.active)  # drop the default empty sheet
     write_qso_sheet(workbook, result)
     write_summary_sheet(workbook, result, dict(result.headers))
-    _save_workbook(workbook, out_path)
-    return result
+    return workbook, result
+
+
+def workbook_bytes(
+    parsed: Sequence[Tuple[str, List[Dict[str, str]], Dict[str, str], List[str]]],
+    selected_columns: Optional[Iterable[str]] = None,
+) -> Tuple[bytes, ConversionResult]:
+    """Build the workbook and return ``(xlsx bytes, result)``.
+
+    This is the entry point the browser edition calls, so the file the browser
+    downloads is produced by exactly the code that writes the desktop file.
+    """
+    workbook, result = build_workbook(parsed, selected_columns)
+    buffer = io.BytesIO()
+    workbook.save(buffer)
+    return buffer.getvalue(), result
 
 
 # ---------------------------------------------------------------------------

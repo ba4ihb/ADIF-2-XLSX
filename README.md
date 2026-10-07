@@ -17,7 +17,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#环境要求)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](#下载)
 [![DXCC](https://img.shields.io/badge/DXCC-ARRL%202026%20edition-FF7EA8)](src/dxcc_tables.py)
-[![Tests](https://img.shields.io/badge/tests-8%20suites%20%C2%B7%20508%20checks-54C6A8)](#自己验证这个工具)
+[![Tests](https://img.shields.io/badge/tests-9%20suites%20%C2%B7%20555%20checks-54C6A8)](#自己验证这个工具)
 
 ---
 
@@ -43,9 +43,41 @@
 
 ---
 
-## 下载
+## 直接用（推荐）：浏览器版
 
-到 [**Releases**](../../releases/latest) 页面下载。每个 ZIP **解压即用**，不需要装 Python，不需要装任何东西。
+**打开就用，不用下载、不用安装、不用跑任何本地程序：**
+
+### 👉 [https://ba4ihb.github.io/ADIF-2-XLSX/web.html](https://ba4ihb.github.io/ADIF-2-XLSX/web.html)
+
+把 `.adi` / `.adif` 拖进页面 → 选好要输出的列 → 点开始 → Excel 直接下载。
+
+- **转换在你的浏览器里完成**，日志不上传、不联网、没有服务器
+- 首次打开下载约 **10 MB** 的 Python 运行时，之后浏览器缓存，**秒开**
+- 手机、平板、Mac、Linux 上一样能用（桌面版只支持 Windows）
+
+### 它是怎么做到的
+
+本项目的转换逻辑是 Python。浏览器版通过 [Pyodide](https://pyodide.org/)
+（CPython 编译成 WebAssembly）把**同一份 `src/adif2xlsx.py` 跑在页面里**，
+所以它不是"用 JavaScript 重写的另一份实现"，而是**同一个转换器换了个运行位置**。
+
+这意味着网页版和桌面版**不会各自漂移** —— 这一点由测试强制：
+`tests/test_browser_edition.py` 会在真实的无头浏览器里跑一次转换，
+核对打包进页面的源码与 `src/` **逐字节相同**，并要求输出与桌面版**逐单元格一致**。
+
+> 相关脚本：
+> - `tools/build_web_assets.py` — 打包 Python 源码 + 下载 openpyxl/et_xmlfile 纯 Python wheel
+> - `tools/build_browser_page.py` — 由 `web/index.html` 生成 `web/browser.html`（复制到 `docs/web.html`）
+>
+> 后者每次都会**先刷新打包的源码并校验与 `src/` 一致**，所以"页面里跑的是旧代码"
+> 这种最难查的问题在构建阶段就被挡住了。
+
+---
+
+## 下载（备选）
+
+不想等那 10 MB，或者网络不便？到 [**Releases**](../../releases/latest) 页面下载。
+每个 ZIP **解压即用**，不需要装 Python，不需要装任何东西。**功能和浏览器版完全一致。**
 
 | ZIP | 用途 | 解压后双击 |
 |-----|------|-----------|
@@ -71,41 +103,39 @@ python src/adif2xlsx.py log.adi -o 结果.xlsx   # 命令行
 
 ---
 
-## 网页版怎么运行（先读这一段）
+## 网页版怎么运行
 
-**这个网页不能单独工作，它需要一个本机小程序配合。** 原因很实际：
+**有两种网页版，别混了：**
 
-- 浏览器**不能**直接把文件写到你磁盘上任意位置，也不能可靠地读取一个文件夹里的几十个 ADI 文件；
-- 更重要的一点：**不该把你的通联日志上传到任何服务器**。业余无线电日志包含你的呼号、地理位置、通联习惯。
+| | 浏览器版（推荐） | 本机服务版（下载包里） |
+|---|---|---|
+| 打开方式 | 直接访问网址 | 双击 `启动网页版.bat` |
+| 需要下载 | 不用 | 需要下 ZIP（约 32 MB） |
+| 需要跑程序 | **不用** | 需要（那个黑色窗口） |
+| 日志去哪 | **不离开浏览器** | 不离开本机 |
+| 首次等待 | 约 10 MB 运行时 | 约 8–60 秒启动 |
+| 平台 | 任何有浏览器的地方 | Windows |
 
-所以「网页版」的实际形态是：
+### 浏览器版
 
-```
-你双击 启动网页版.bat
-        ↓
-本机小程序启动，只监听 127.0.0.1（仅本机可访问，其他机器连不上）
-        ↓
-浏览器自动打开 http://127.0.0.1:<随机端口>/?token=<本次随机令牌>
-        ↓
-你在网页上拖文件、选列、点转换
-        ↓
-转换在你的电脑上完成 → Excel 由浏览器下载到下载目录
-```
+点 [这个链接](https://ba4ihb.github.io/ADIF-2-XLSX/web.html) 就行。
+页面会用 Pyodide 把真正的 Python 转换器加载进浏览器，转换在页面内完成。
+**首次打开要下载约 10 MB**（Pyodide 运行时 + openpyxl），之后走浏览器缓存。
 
-**日志不出本机，也不联网。**
+### 本机服务版（为什么它也存在）
 
-### 为什么不做成"纯网页"
+浏览器**不能**直接把文件写到你磁盘上任意位置，也不能可靠地读取一个文件夹里的
+几十个 ADI 文件。本机服务版把这些交给一个小程序，界面仍然是浏览器。
+**注意它只监听 `127.0.0.1`**，其他机器连不上。
 
-技术上可以把 Python 编译到浏览器里跑（Pyodide），但代价是：
+### 为什么不用 JavaScript 重写一遍
 
 | 方案 | 代价 |
 |------|------|
-| Pyodide 纯前端 | 首屏要下载几百 MB；而且必须**用 JavaScript 把转换逻辑重写一遍** |
-| 两份实现 | 网页版和桌面版的行为**必然会逐渐不一致** —— 这正是要避免的 |
-| ✅ 本机服务 | 三种界面共用同一份 Python 代码，行为天然一致；代价是要跑一个本机进程 |
+| JavaScript 重写解析与写 xlsx | **两份实现必然逐渐不一致** —— 正是要避免的 |
+| ✅ Pyodide 跑同一份 Python | 首次多下 10 MB，之后缓存；行为天然一致 |
 
-本项目选择了第三种。为了保证它不是"用了就后悔"的设计，做了这些加固：
-只绑定回环地址、每次运行随机 token、严格校验路径（防目录穿越）、上传的临时文件转换后立即删除。
+本项目选了后者：**一份代码，三种界面**。
 
 ---
 
@@ -439,12 +469,13 @@ python tests/run_all_tests.py --with-gui --with-web
 | `test_postage.py` | 56 | 每一条公布的资费、分区、SAL 开办情况、不通邮清单 |
 | `test_acceptance.py` | 240 | 端到端契约：**从源 ADI 重新推导工作簿里的每一个值** |
 | `test_frontend_parity.py` | 43 | **网页版与桌面版功能一致**：列目录/标签/预设同源，三个入口产出**逐单元格相同**的工作簿 |
+| `test_browser_edition.py` | 47 | **浏览器版就是同一个转换器**：打包源码与 `src/` 逐字节相同；页面不调用任何服务；并在真实无头浏览器里实跑一次转换 |
 | `test_gui.py` | 37 | 界面能构建并转换；无控制台时不会静默退出 |
 | `test_web.py` | 68 | HTTP API：与命令行结果一致、列选择、下载、Zip 上传、令牌校验 |
 | `test_exe.py` | 一致性 | 打包版与源码产出**逐单元格完全相同** |
 | `test_fuzz.py` | 2000 输入 | 任何输入都不打印异常堆栈、不产生损坏的工作簿 |
 
-当前状态：**8/8 套件通过（含打包版一致性），`ruff check` 无告警**，网页版、桌面版、命令行三者输出逐单元格一致。
+当前状态：**9/9 套件通过（含打包版一致性与浏览器版实跑），`ruff check` 无告警**，浏览器版、本机服务版、桌面版、命令行四者输出一致。
 
 ---
 
@@ -1075,6 +1106,7 @@ pip install ruff && ruff check .          :: lint (config in ruff.toml)
 | `test_postage.py` | 56 | every published tariff figure, the zone assignments, SAL availability and the 不通邮 list |
 | `test_acceptance.py` | 240 | the end-to-end contract, re-deriving every workbook value from the source |
 | `test_frontend_parity.py` | 43 | the web page and the desktop app stay functionally identical: same catalogue, same labels, and all three entry points produce cell-identical workbooks |
+| `test_browser_edition.py` | 47 | the browser edition IS the same converter: the packed sources are byte-identical to `src/`, the page calls no service, and a real headless browser performs a conversion |
 | `test_web.py` | 68 | the HTTP API the page uses: conversion identical to the command line, column selection, save-to-path and download, zip uploads, token checks, path-traversal refusal, no scratch left behind |
 | `test_gui.py` | 37 | the UI builds and converts; a windowed build opens a window and keeps it; no silent exit without a console; errors are logged, never swallowed |
 | `test_fuzz.py` | 2000 inputs | the tool never prints a traceback and never writes a corrupt workbook |

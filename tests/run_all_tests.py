@@ -29,6 +29,8 @@ SUITES = [
     # the desktop app must stay functionally identical, so this runs by default
     # rather than behind a flag.
     ("front-end parity", os.path.join(HERE, "test_frontend_parity.py")),
+    # The browser edition must stay the same converter, not become a second one.
+    ("browser edition", os.path.join(HERE, "test_browser_edition.py")),
 ]
 # The UI suite drives real windows, so it only runs when asked for.
 GUI_SUITE = ("desktop UI", os.path.join(HERE, "test_gui.py"))

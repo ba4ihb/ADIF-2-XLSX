@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>harness</title>
+<style>
+  body{margin:0;font:13px/1.55 monospace}
+  #verdict{font:bold 20px monospace;padding:12px;background:#eee}
+  #out{white-space:pre-wrap;padding:12px;font-size:12px;margin:0}
+</style>
+</head>
+<body>
+<div id="verdict">running</div>
+<pre id="out"></pre>
+<script>
+/* Drives web/browser.html in an iframe and prints the result, so a headless
+   screenshot shows the outcome.  The page reports back by postMessage: waiting
+   on the iframe's load event proved unreliable in headless. */
+const LOG = [];
+const out = document.getElementById("out");
+const verdict = document.getElementById("verdict");
+function log(m) { LOG.push(m); out.textContent = LOG.join("\n"); }
+function finish(pass, why) {
+  verdict.textContent = (pass ? "HARNESS PASS" : "HARNESS FAIL") + "  " + why;
+  verdict.style.background = pass ? "#d8f5e3" : "#ffd9dd";
+  log("VERDICT: " + (pass ? "PASS" : "FAIL") + "  " + why);
+}
+
+const frame = document.createElement("iframe");
+frame.src = "browser.html";
+document.body.insertBefore(frame, out);
+
+const t0 = Date.now();
+let asked = false;
+
+window.addEventListener("message", (event) => {
+  const d = event.data;
+  if (!d || d.from !== "adif2xlsx") return;
+  if (d.greeting) { log("page embedded and listening"); return; }
+  if (d.log) { log(d.log); return; }
+  if (d.done === undefined) return;
+
+  if (!d.done) { finish(false, d.why || "unknown"); return; }
+  const want = ["CALL", "QSO_DATE", "TIME_ON_UTC", "FREQ_MHZ", "BAND", "MODE",
+                "RST_SENT", "RST_RCVD", "STATION_CALLSIGN", "SOURCE_FILE",
+                "DXCC_ENTITY", "QSL_POSTAGE_AIR"];
+  const missing = want.filter(n => !(d.column_names || []).includes(n));
+  log(`total=${d.total} columns=${d.columns} bytes=${d.bytes}`);
+  log(`saved as: ${d.saved_as}`);
+  log(`zip magic: ${d.magic}   (504b0304 = a real xlsx)`);
+  log(`documented columns missing: ${missing.length ? missing.join(",") : "none"}`);
+  const pass = d.total > 0 && missing.length === 0 &&
+               String(d.magic).startsWith("50 4b 03 04");
+  finish(pass, `total=${d.total} bytes=${d.bytes}`);
+});
+
+/* Ask once the page has greeted us; retry so a slow first paint cannot lose it. */
+const ask = setInterval(async () => {
+  if (asked) return;
+  const w = frame.contentWindow;
+  if (!w || !w.__ready) {
+    if (Date.now() - t0 > 240000) {
+      clearInterval(ask);
+      finish(false, "runtime never became ready");
+    }
+    return;
+  }
+  asked = true;
+  clearInterval(ask);
+  const adi = await (await fetch("sample.adi")).text();
+  log(`runtime ready after ${((Date.now() - t0) / 1000).toFixed(1)}s; asking for a conversion`);
+  w.postMessage({ cmd: "run-test", adi, name: "sample_log.adi" }, "*");
+}, 700);
+</script>
+</body>
+</html>
