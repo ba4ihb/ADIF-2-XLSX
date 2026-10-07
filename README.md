@@ -10,6 +10,7 @@
 >
 > This project was written by **DeepSeek Harness + DeepSeek-V4.1-Flash Max**.
 
+[![tests](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml/badge.svg)](https://github.com/ba4ihb/ADIF-2-XLSX/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-94.9%25-3776AB?logo=python&logoColor=white)](#语言的构成)
 [![HTML](https://img.shields.io/badge/HTML-4.8%25-E34F26?logo=html5&logoColor=white)](#语言的构成)
