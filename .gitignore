@@ -22,6 +22,8 @@ venv/
 env/
 
 # Test and tooling output ---------------------------------------------------
+# Staged only while the browser test runs.
+web/sample.adi
 *.xlsx
 !samples/sample_output.xlsx
 .pytest_cache/

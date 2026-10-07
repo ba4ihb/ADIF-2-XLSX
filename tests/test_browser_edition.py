@@ -236,10 +236,13 @@ def test_browser_and_service_agree(with_browser: bool):
 
 
 def _harness_verdict(edge, port, profile, shot) -> str:
-    """Read the verdict the harness wrote into its DOM.
+    """Read the verdict the harness wrote into its #verdict element.
 
-    ``--dump-dom`` prints the page after it settles, which is where the harness
-    puts its result.  Falls back to the screenshot's existence if that fails.
+    ``--dump-dom`` prints the WHOLE document, which contains the harness's own
+    JavaScript -- including the literal strings "HARNESS PASS".  Looking for
+    those words in the document therefore always succeeds, which would make this
+    test vacuous: the earlier version of it "passed" against a page whose verdict
+    element said HARNESS FAIL.  Only the element's own text is read now.
     """
     profile2 = tempfile.mkdtemp(prefix="edge_dom_")
     try:
@@ -251,7 +254,10 @@ def _harness_verdict(edge, port, profile, shot) -> str:
              f"http://127.0.0.1:{port}/_test_harness.html"],
             capture_output=True, text=True, timeout=600,
             encoding="utf-8", errors="replace")
-        return proc.stdout
+        match = re.search(r'id="verdict"[^>]*>(.*?)</div>', proc.stdout, re.S)
+        if not match:
+            return "(no verdict element in the DOM)"
+        return " ".join(match.group(1).split())
     except Exception as exc:                        # noqa: BLE001
         return f"(could not read the DOM: {exc})"
     finally:

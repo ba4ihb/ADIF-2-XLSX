@@ -914,14 +914,15 @@ if (window.parent && window.parent !== window) {
       if (!window.__ready) { window.parent.postMessage(
         { from: "adif2xlsx", done: false, why: "runtime not ready" }, "*"); return; }
 
-      const file = new File([event.data.adi], event.data.name || "sample.adi",
-                            { type: "text/plain" });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      const picker = $("picker");
-      picker.files = dt.files;
-      picker.dispatchEvent(new Event("change"));
-      say("file added: " + files.map(f => f.name).join(","));
+      // The payload is built from the ADI TEXT the harness sends, not from a
+      // File put into the page's <input>.  A File constructed in another realm
+      // reads back short through arrayBuffer() (335 bytes of a 3.5 KB log), so
+      // building the payload here is both simpler and honest about what is
+      // being tested: the conversion of those bytes.
+      const files = [{ name: event.data.name || "sample.adi",
+                       data: bytesToB64(new TextEncoder().encode(event.data.adi)) }];
+      say(`payload: ${files.length} file, ${files[0].data.length} b64 chars, ` +
+          `${event.data.adi.length} chars of ADIF`);
 
       // Capture the download instead of writing it to disk.
       let blob = null;
@@ -934,7 +935,25 @@ if (window.parent && window.parent !== window) {
       };
 
       const started = performance.now();
-      await convert();
+      // Drive the conversion through the same bridge the UI uses, and report
+      // each step: the UI's own convert() swallows errors into a toast, which is
+      // invisible to a harness.
+      const data = await pyConvert({ files, columns: selectedColumns() });
+      say("pyConvert returned ok=" + data.ok +
+          (data.ok ? ` total=${data.report.total} cols=${data.report.columns} ` +
+                     `xlsx=${data.bytes.length}B`
+                   : ` error=${data.error}`));
+      if (!data.ok) {
+        window.parent.postMessage({ from: "adif2xlsx", done: false,
+                                    why: String(data.error).slice(0, 300) }, "*");
+        return;
+      }
+      // Write it the way the UI does, capturing the blob instead of saving it.
+      savedAs = ($("downloadName").value.trim() || "adif_export.xlsx");
+      blob = new Blob([data.bytes], {
+        type: "application/vnd.openxmlformats-officedocument" +
+              ".spreadsheetml.sheet" });
+      window.__lastReport = data.report;
       HTMLAnchorElement.prototype.click = realClick;
 
       const report = window.__lastReport || {};
