@@ -3,10 +3,15 @@ build/
 dist/
 *.spec
 
-# ...but the browser editions assets live in docs/dist and MUST be
-# published: the page fetches the packed Python sources and the openpyxl
-# wheel from beside itself.  Hiding them breaks the live site, not the build.
+# ...but the browser edition's assets live in docs/dist and MUST be published:
+# the page fetches the packed Python sources and the openpyxl wheel from beside
+# itself.  Hiding them breaks the live site, not just the build.
 !docs/dist/
+
+# web/dist is the same set of files before they are copied to the site.  The page
+# builder reads them and the browser suite asserts they match src/, so a fresh
+# clone without them can do neither -- which is exactly how CI first failed here.
+!web/dist/
 
 # Release archives ----------------------------------------------------------
 # The ZIPs are attached to a GitHub Release, not committed: 390 MB of binaries

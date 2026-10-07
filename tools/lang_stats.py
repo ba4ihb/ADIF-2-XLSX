@@ -14,7 +14,8 @@ from collections import Counter
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace")
 
-ROOT = r"C:\Users\Administrator\Desktop\adif2xlsx"
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 
 #: extension -> language
 LANGUAGES = {

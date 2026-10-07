@@ -5,7 +5,10 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = r"C:\Users\Administrator\Desktop\adif2xlsx"
+# Derived from this file's location: a hardcoded absolute path made the
+# suite pass only on the machine it was written on.
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 EXE = os.path.join(ROOT, "dist", "adif2xlsx.exe")
 PY = sys.executable
 SCRIPT = os.path.join(ROOT, "src", "adif2xlsx.py")

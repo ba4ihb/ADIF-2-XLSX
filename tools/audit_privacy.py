@@ -14,8 +14,11 @@ import sys
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace")
 
-ROOT = r"C:\Users\Administrator\Desktop\adif2xlsx"
-ORIGINAL = r"C:\Users\Administrator\Desktop\ADI"
+# The repository, from this file's location, and (optionally) the real
+# exports to compare against.  Pass the folder on the command line or set
+# ADIF2XLSX_ORIGINAL: a personal path must not be baked into the tool.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ORIGINAL = os.environ.get("ADIF2XLSX_ORIGINAL", "")
 FIELD_RE = re.compile(r"<([A-Za-z_][\w.\-]*)\s*:\s*(\d+)(?::[A-Za-z])?>"
                       r"([^<]*)", re.I)
 

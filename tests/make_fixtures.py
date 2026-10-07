@@ -36,7 +36,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(HERE), "src"))
 import dxcc  # noqa: E402
 
 DEST = os.path.join(HERE, "fixtures", "adi")
-DEFAULT_SOURCE = r"C:\Users\Administrator\Desktop\ADI"
+# The personal export this was generated from, if you want to regenerate
+# the fixtures from a real log.  Empty by default: the path is personal and
+# the tool must run anywhere.
+DEFAULT_SOURCE = os.environ.get("ADIF2XLSX_ORIGINAL", "")
 
 # --- personal data to remove ------------------------------------------------
 # Callsigns belonging to the owner or his operators.
