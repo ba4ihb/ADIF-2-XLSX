@@ -44,6 +44,8 @@ htmlcov/
 tests/fixtures/adi/*.tmp
 
 # Editors and OS ------------------------------------------------------------
+# A stray backup of a source file must never be committed.
+*.bak
 .vscode/
 .idea/
 *.swp
