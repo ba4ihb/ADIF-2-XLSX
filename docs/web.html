@@ -582,6 +582,15 @@ const PYODIDE_CDN =
   `https://cdn.jsdelivr.net/pyodide/${PYODIDE_VERSION}/full/`;
 
 function boot(message, ratio, state) {
+  /* A stall here is otherwise invisible from outside, so every stage is
+     announced to an embedding harness when there is one. */
+  if (window.parent && window.parent !== window) {
+    try {
+      window.parent.postMessage(
+        { from: "adif2xlsx", log: "boot: " + message.replace(/<[^>]+>/g, "") },
+        "*");
+    } catch (_) { /* nothing to do */ }
+  }
   const bar = document.querySelector("#boot .bar i");
   document.getElementById("bootText").innerHTML = message;
   if (bar) bar.style.width = Math.round((ratio || 0) * 100) + "%";
